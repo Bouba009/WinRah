@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WinRah - متابعة مكان القطار</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --secondary: #f97316;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --border: #e2e8f0;
+        }
+        
+        /* ============== لمسة عصرية: التمرير السلس ============== */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: white;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .full-bleed {
+            width: 100%;
+            padding-top: 80px;
+            padding-bottom: 80px;
+        }
+        
+        .full-bleed .container {
+            padding: 0 20px;
+        }
+
+        /* ==================== HEADER ==================== */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(255, 255, 255, 0.85); /* خلفية شفافة عصرية */
+            backdrop-filter: blur(10px); /* تأثير بلور للخلفية */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .logo-icon img {
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #666;
+            transition: color 0.3s;
+            font-weight: 500;
+            position: relative;
+            padding-bottom: 5px;
+        }
+        
+        /* ============== لمسة عصرية: خط متحرك أسفل الروابط ============== */
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            right: 0;
+            background-color: var(--primary);
+            transition: width 0.3s ease-out;
+        }
+        
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+            left: 0;
+            right: auto;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background-size: 200% auto; /* لحركة الخلفية */
+            color: white !important;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: bold !important;
+            cursor: pointer;
+            transition: all 0.4s ease-in-out;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        /* ============== لمسة عصرية: حركة خلفية الزر عند المرور ============== */
+        .download-btn:hover {
+            background-position: right center; /* تحريك الخلفية */
+            box-shadow: 0 5px 20px rgba(37, 99, 235, 0.4);
+            transform: translateY(-2px); /* رفعه قليلاً */
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* ==================== HERO ==================== */
+        .hero {
+            background: linear-gradient(135deg, #f0f9ff 0%, white 100%);
+        }
+
+        .hero-content {
+            text-align: center;
+        }
+
+        .hero-text h1 {
+            font-size: 56px;
+            color: var(--primary);
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .hero-text .subtitle {
+            font-size: 22px;
+            color: var(--dark);
+            margin-bottom: 30px;
+            line-height: 1.8;
+            font-weight: 500;
+        }
+
+        .hero-image {
+            position: relative;
+            max-width: 300px;
+            margin: 20px auto 0;
+        }
+        
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 40px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            transition: transform 0.4s ease;
+        }
+        .hero-image:hover img {
+            transform: scale(1.05); /* تكبير الصورة عند المرور */
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background-size: 200% auto;
+            color: white !important;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold !important;
+            cursor: pointer;
+            transition: all 0.4s ease-in-out;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            background-position: right center;
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        /* ==================== FEATURES ==================== */
+        .features {
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .section-title p {
+            font-size: 18px;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            transition: box-shadow 0.3s, transform 0.3s;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            box-shadow: 0 15px 40px rgba(37, 99, 235, 0.15); /* ظل أكثر وضوحًا */
+            transform: translateY(-8px); /* رفعه للأعلى بشكل أكبر */
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: #dbeafe;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin: 0 auto 15px;
+            color: var(--primary);
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* ==================== SCREENSHOTS CAROUSEL ==================== */
+        .screenshots {
+            background: linear-gradient(135deg, white 0%, #f0f9ff 100%);
+        }
+
+        .carousel-outer-container {
+            position: relative;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .carousel-container {
+            overflow: hidden;
+            border-radius: 25px;
+            border: 8px solid white;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .carousel-main {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .carousel-slide img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .carousel-navigation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 25px;
+            gap: 20px;
+        }
+
+        .carousel-btn {
+            background: white;
+            border: 1px solid var(--border);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            color: var(--primary);
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            z-index: 10;
+        }
+        
+        .carousel-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .dot.active {
+            background: var(--primary);
+            width: 30px;
+            border-radius: 6px;
+        }
+        
+        /* ==================== VIDEO SECTION ==================== */
+        .video-section {
+            background: white;
+        }
+
+        .video-player {
+            position: relative;
+            aspect-ratio: 16 / 9;
+            background: #1e293b;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+        
+        .video-player iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        
+        /* ============== أنيميشن للظهور عند التمرير ============== */
+        .animate-on-scroll {
+            opacity: 0;
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        
+        .fade-in-up {
+            transform: translateY(30px);
+        }
+
+        .fade-in {
+            transform: scale(0.95);
+        }
+
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        
+        /* ==================== FOOTER ==================== */
+        footer {
+            background: var(--dark);
+            color: white;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h4 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .footer-logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+        }
+
+        .footer-logo-text {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .footer-desc {
+            color: rgba(255,255,255,0.8);
+            line-height: 1.6;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+        
+            nav {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .hero-text h1 {
+                font-size: 36px;
+            }
+            
+            .hero-text .subtitle {
+                font-size: 18px;
+            }
+
+            .section-title h2 {
+                font-size: 32px;
+            }
+
+            .full-bleed {
+                padding-top: 60px;
+                padding-bottom: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjQ_2oS_qxH0sWlg5nGLQ1B615EZUPaYn7OiiwC2_mwjTigSWPJtj45ZwQe_eDupvrRJL-2cHgXmnL78xdCiEVH4j6B3cH-feQrRbZJC55We088b5O-Mw1-mSN67C2XCo0UIBfE2aD0UG3htHnawP2Ey6uD1y9LIATl1G1rxgA0RhSCzooBPJXPgCK-uW4/s1536/Picsart_24-07-18_12-07-08-795.png" alt="WinRah Logo">
+                </div>
+                <span>WinRah</span>
+            </div>
+            <nav>
+                <a href="#features">المميزات</a>
+                <a href="#screenshots">لقطات الشاشة</a>
+                <a href="#video">الفيديو</a>
+            </nav>
+            <a href="https://apk.e-droid.net/apk/app3771562-y2tx5k.apk?v=2" class="download-btn">حمل الآن</a>
+            <button class="menu-toggle">☰</button>
+        </div>
+    </header>
+
+    <section class="hero full-bleed">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                     <div class="animate-on-scroll fade-in-up" style="display: inline-block; background: #dbeafe; color: var(--primary); padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: bold; margin-bottom: 20px;">
+                        🚆 تتبع قطارك بسهولة
+                    </div>
+                    <h1 class="animate-on-scroll fade-in-up" style="transition-delay: 0.1s;">WinRah</h1>
+                    <p class="subtitle animate-on-scroll fade-in-up" style="transition-delay: 0.2s;">متابعة مكان القطار لحظة بلحظة</p>
+                    <div class="hero-buttons animate-on-scroll fade-in-up" style="transition-delay: 0.3s;">
+                        <a href="https://apk.e-droid.net/apk/app3771562-y2tx5k.apk?v=2" class="btn-primary">📥 حمل التطبيق الآن</a>
+                    </div>
+                </div>
+                <div class="hero-image animate-on-scroll fade-in" style="transition-delay: 0.4s;">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjQ_2oS_qxH0sWlg5nGLQ1B615EZUPaYn7OiiwC2_mwjTigSWPJtj45ZwQe_eDupvrRJL-2cHgXmnL78xdCiEVH4j6B3cH-feQrRbZJC55We088b5O-Mw1-mSN67C2XCo0UIBfE2aD0UG3htHnawP2Ey6uD1y9LIATl1G1rxgA0RhSCzooBPJXPgCK-uW4/s320/Picsart_24-07-18_12-07-08-795.png" alt="WinRah App Icon">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features full-bleed" style="background: white;">
+        <div class="container">
+            <div class="section-title animate-on-scroll fade-in-up">
+                <h2>مميزات التطبيق</h2>
+                <p>كل ما تحتاجه لتجربة سفر مريحة ومنظمة</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card animate-on-scroll fade-in-up" style="transition-delay: 0.1s;">
+                    <div class="feature-icon">📍</div>
+                    <h3>تتبع مباشر</h3>
+                    <p>شاهد موقع القطار على الخريطة مباشرة وبدون تأخير.</p>
+                </div>
+                <div class="feature-card animate-on-scroll fade-in-up" style="transition-delay: 0.2s;">
+                    <div class="feature-icon">🗺️</div>
+                    <h3>معلومات المحطات</h3>
+                    <p>احصل على تفاصيل دقيقة عن المحطات القادمة ومواعيد الوصول.</p>
+                </div>
+                <div class="feature-card animate-on-scroll fade-in-up" style="transition-delay: 0.3s;">
+                    <div class="feature-icon">🔔</div>
+                    <h3>تنبيهات دقيقة</h3>
+                    <p>استقبل إشعارات فورية عند اقتراب القطار من محطتك.</p>
+                </div>
+                <div class="feature-card animate-on-scroll fade-in-up" style="transition-delay: 0.4s;">
+                    <div class="feature-icon">⚙️</div>
+                    <h3>سهولة الاستخدام</h3>
+                    <p>واجهة بسيطة وواضحة مصممة لتوفير أفضل تجربة استخدام.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="screenshots" class="screenshots full-bleed">
+        <div class="container">
+            <div class="section-title animate-on-scroll fade-in-up">
+                <h2>لقطات من التطبيق</h2>
+                <p>ألقِ نظرة على واجهات التطبيق الأنيقة والعملية.</p>
+            </div>
+            <div class="carousel-outer-container animate-on-scroll fade-in" style="transition-delay: 0.2s;">
+                <div class="carousel-container">
+                    <div class="carousel-main">
+                        <div class="carousel-slide">
+                            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhPy9bTKksw_BhN4wuLvmShVQ4_NshKdySV6zYKmyyiyAua0Bd7BjLfO92C8l5arFyyqzhFxn4UKOVbIrlUmsHYjSoSvsoiMRVrrbiFEOU96Wf0uDZsB054LGAfdKDc-SX_gZj0P4b9-LaPg0brl0v8YpMPyUvvszoKm7SW7Rs3s7vjazz4b0QSBD-16hY/s2340/Screenshot_2025-10-21-09-22-34-872_winrah.copy2.jpg" alt="Screenshot 1">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi14jOX4nvfNGC5j1JlIuXjpSrdcDti1w8pkwMNEvMeHl30avbUJJrxL5fJBdSNWBrzIFqa9MtD_mkNnz_RSeE2ppDD1kT-Burfxdu8_kxyu5Ddemrx-bzjIU4s486aA_8BGhM6fVQOu_y0T-Lf18M7FqplNnHYrmefrNQKC3vXLPmbSrAcONwrblbyS8I/s2340/Screenshot_2025-10-21-09-22-59-004_winrah.copy2.jpg" alt="Screenshot 2">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhB1c78NsY23Bc59Xc7pmZ0G4D2jsasW7dG_Ek5ETJ20m3fnxms_XG8c_siPJF1UbFL7WKuIg2DXW05pbZXNTnbOM2ct2H3D_OpqTQX6mWpCUKLC3VWKkufV7b0hDF5Rg3G8vKsX_KQUPGJ2wDgL8zNiwTguyxH2EBwO84fi-h8BWQvm5X9A489Snc13J4/s2340/Screenshot_2025-10-21-09-23-09-615_winrah.copy2.jpg" alt="Screenshot 3">
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-navigation">
+                     <button class="carousel-btn prev" onclick="prevSlide()">❮</button>
+                     <div class="carousel-dots"></div>
+                     <button class="carousel-btn next" onclick="nextSlide()">❯</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="video" class="video-section full-bleed" style="background: white;">
+        <div class="container">
+            <div class="section-title animate-on-scroll fade-in-up">
+                <h2>شاهد كيف يعمل</h2>
+                <p>فيديو قصير يوضح طريقة استعمال التطبيق بكل سهولة.</p>
+            </div>
+            <div class="video-player animate-on-scroll fade-in" style="transition-delay: 0.2s;">
+                <iframe src="https://www.youtube.com/embed/lbCnDPqWQAM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+        </div>
+    </section>
+
+    <footer class="full-bleed">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjQ_2oS_qxH0sWlg5nGLQ1B615EZUPaYn7OiiwC2_mwjTigSWPJtj45ZwQe_eDupvrRJL-2cHgXmnL78xdCiEVH4j6B3cH-feQrRbZJC55We088b5O-Mw1-mSN67C2XCo0UIBfE2aD0UG3htHnawP2Ey6uD1y9LIATl1G1rxgA0RhSCzooBPJXPgCK-uW4/s1536/Picsart_24-07-18_12-07-08-795.png" alt="WinRah Logo">
+                        <div class="footer-logo-text">WinRah</div>
+                    </div>
+                    <p class="footer-desc">رفيقك الأول في رحلات القطار.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>الروابط السريعة</h4>
+                    <ul>
+                        <li><a href="#">الرئيسية</a></li>
+                        <li><a href="#features">المميزات</a></li>
+                        <li><a href="#screenshots">لقطات الشاشة</a></li>
+                        <li><a href="#video">الفيديو</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>الدعم</h4>
+                    <ul>
+                        <li><a href="#">الأسئلة الشائعة</a></li>
+                        <li><a href="#">الدعم الفني</a></li>
+                        <li><a href="#">سياسة الخصوصية</a></li>
+                        <li><a href="#">الشروط والأحكام</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 WinRah. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ==================== CAROUSEL SCRIPT ==================== 
+        const carouselMain = document.querySelector('.carousel-main');
+        const slides = document.querySelectorAll('.carousel-slide');
+        const dotsContainer = document.querySelector('.carousel-dots');
+        let currentSlide = 0;
+
+        if (slides.length > 0) {
+            slides.forEach((_, i) => {
+                const dot = document.createElement('button');
+                dot.classList.add('dot');
+                if (i === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => goToSlide(i));
+                dotsContainer.appendChild(dot);
+            });
+            
+            const dots = document.querySelectorAll('.dot');
+
+            function updateCarousel() {
+                carouselMain.style.transform = `translateX(-${currentSlide * 100}%)`;
+                dots.forEach(dot => dot.classList.remove('active'));
+                dots[currentSlide].classList.add('active');
+            }
+
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % slides.length;
+                updateCarousel();
+            }
+
+            function prevSlide() {
+                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                updateCarousel();
+            }
+
+            function goToSlide(n) {
+                currentSlide = n;
+                updateCarousel();
+            }
+        }
+        
+        // ==================== SCROLL ANIMATION SCRIPT ====================
+        const animatedElements = document.querySelectorAll('.animate-on-scroll');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1 // نسبة ظهور العنصر قبل تفعيل الأنيميشن
+        });
+        
+        animatedElements.forEach(el => {
+            observer.observe(el);
+        });
+
+    </script>
+</body>
+</html>
