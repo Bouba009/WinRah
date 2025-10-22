@@ -1,9 +1,14 @@
 <!DOCTYPE html>
+<!-- يبدأ باللغة العربية افتراضياً -->
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WinRah - متابعة مكان القطار</title>
+    
+    <!-- Title in Both Languages -->
+    <title lang="ar">WinRah - متابعة مكان القطار</title>
+    <title lang="fr" style="display:none;">WinRah - Suivi de la localisation du train</title>
+
     <style>
         * {
             margin: 0;
@@ -19,7 +24,6 @@
             --border: #e2e8f0;
         }
         
-        /* ============== لمسة عصرية: التمرير السلس ============== */
         html {
             scroll-behavior: smooth;
         }
@@ -31,8 +35,23 @@
             background: white;
             width: 100%;
             overflow-x: hidden;
+            transition: all 0.3s ease;
         }
-
+        
+        /* Language Specific Styles */
+        body[data-lang="fr"] [lang="ar"] { display: none; }
+        body[data-lang="ar"] [lang="fr"] { display: none; }
+        
+        html[dir="ltr"] nav a::after {
+            left: 0;
+            right: auto;
+        }
+        html[dir="ltr"] nav a:hover::after {
+            width: 100%;
+            right: 0;
+            left: auto;
+        }
+        
         .container {
             width: 100%;
             max-width: 1200px;
@@ -46,17 +65,13 @@
             padding-bottom: 80px;
         }
         
-        .full-bleed .container {
-            padding: 0 20px;
-        }
-
         /* ==================== HEADER ==================== */
         header {
             position: sticky;
             top: 0;
-            z-index: 50;
-            background: rgba(255, 255, 255, 0.85); /* خلفية شفافة عصرية */
-            backdrop-filter: blur(10px); /* تأثير بلور للخلفية */
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             width: 100%;
         }
@@ -86,7 +101,7 @@
             height: 45px;
             border-radius: 8px;
         }
-
+        
         nav {
             display: flex;
             gap: 30px;
@@ -101,7 +116,6 @@
             padding-bottom: 5px;
         }
         
-        /* ============== لمسة عصرية: خط متحرك أسفل الروابط ============== */
         nav a::after {
             content: '';
             position: absolute;
@@ -122,10 +136,45 @@
             left: 0;
             right: auto;
         }
+        
+        .lang-switcher-bar {
+            background: var(--light);
+            padding: 8px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .lang-switcher {
+            display: flex;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            background: white;
+        }
+        .lang-switcher button {
+            background: none;
+            border: none;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #666;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .lang-switcher button.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
         .download-btn {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
-            background-size: 200% auto; /* لحركة الخلفية */
+            background-size: 200% auto;
             color: white !important;
             border: none;
             padding: 12px 24px;
@@ -135,13 +184,13 @@
             transition: all 0.4s ease-in-out;
             text-decoration: none;
             text-align: center;
+            white-space: nowrap;
         }
 
-        /* ============== لمسة عصرية: حركة خلفية الزر عند المرور ============== */
         .download-btn:hover {
-            background-position: right center; /* تحريك الخلفية */
+            background-position: right center;
             box-shadow: 0 5px 20px rgba(37, 99, 235, 0.4);
-            transform: translateY(-2px); /* رفعه قليلاً */
+            transform: translateY(-2px);
         }
 
         .menu-toggle {
@@ -150,6 +199,7 @@
             border: none;
             font-size: 24px;
             cursor: pointer;
+            z-index: 1001;
         }
 
         /* ==================== HERO ==================== */
@@ -171,15 +221,38 @@
         .hero-text .subtitle {
             font-size: 22px;
             color: var(--dark);
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             line-height: 1.8;
             font-weight: 500;
         }
+        
+        .download-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+        }
+        .stat-item {
+            font-size: 13px;
+            color: #555;
+            font-weight: 500;
+        }
+        .stat-item strong {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
 
         .hero-image {
             position: relative;
             max-width: 300px;
-            margin: 20px auto 0;
+            margin: 40px auto 0;
         }
         
         .hero-image img {
@@ -190,46 +263,11 @@
             transition: transform 0.4s ease;
         }
         .hero-image:hover img {
-            transform: scale(1.05); /* تكبير الصورة عند المرور */
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 30px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            background-size: 200% auto;
-            color: white !important;
-            border: none;
-            padding: 16px 32px;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: bold !important;
-            cursor: pointer;
-            transition: all 0.4s ease-in-out;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-
-        .btn-primary:hover {
-            background-position: right center;
-            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
-            transform: translateY(-2px);
+            transform: scale(1.05);
         }
         
-        /* ==================== FEATURES ==================== */
-        .features {
-            background: white;
-        }
-
-        .section-title {
+        /* ==================== FEATURES & Others ==================== */
+         .section-title {
             text-align: center;
             margin-bottom: 60px;
         }
@@ -263,8 +301,8 @@
         }
 
         .feature-card:hover {
-            box-shadow: 0 15px 40px rgba(37, 99, 235, 0.15); /* ظل أكثر وضوحًا */
-            transform: translateY(-8px); /* رفعه للأعلى بشكل أكبر */
+            box-shadow: 0 15px 40px rgba(37, 99, 235, 0.15);
+            transform: translateY(-8px);
         }
 
         .feature-icon {
@@ -285,12 +323,7 @@
             color: var(--primary);
             margin-bottom: 10px;
         }
-
-        .feature-card p {
-            color: #666;
-            line-height: 1.6;
-        }
-
+        
         /* ==================== SCREENSHOTS CAROUSEL ==================== */
         .screenshots {
             background: linear-gradient(135deg, white 0%, #f0f9ff 100%);
@@ -376,10 +409,6 @@
         }
         
         /* ==================== VIDEO SECTION ==================== */
-        .video-section {
-            background: white;
-        }
-
         .video-player {
             position: relative;
             aspect-ratio: 16 / 9;
@@ -395,81 +424,27 @@
             border: 0;
         }
         
-        /* ============== أنيميشن للظهور عند التمرير ============== */
-        .animate-on-scroll {
-            opacity: 0;
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        /* ==================== ABOUT US ==================== */
+        .about-us { background: #f8fafc; }
+        .about-us-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            line-height: 1.8;
+            font-size: 18px;
         }
-        
-        .fade-in-up {
-            transform: translateY(30px);
+        .about-us-content .label-info {
+            background: #e0e7ff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-top: 10px;
         }
-
-        .fade-in {
-            transform: scale(0.95);
-        }
-
-        .animate-on-scroll.is-visible {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
+        html[dir="rtl"] .about-us-content .label-info { border-right: 4px solid var(--primary); }
+        html[dir="ltr"] .about-us-content .label-info { border-left: 4px solid var(--primary); }
         
         /* ==================== FOOTER ==================== */
-        footer {
-            background: var(--dark);
-            color: white;
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-
-        .footer-section h4 {
-            font-size: 18px;
-            margin-bottom: 20px;
-            color: white;
-        }
-
-        .footer-section ul {
-            list-style: none;
-        }
-
-        .footer-section a {
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-section a:hover {
-            color: white;
-        }
-
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        
-        .footer-logo img {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
-        }
-
-        .footer-logo-text {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .footer-desc {
-            color: rgba(255,255,255,0.8);
-            line-height: 1.6;
-        }
-
+        footer { background: var(--dark); color: white; }
         .footer-bottom {
             border-top: 1px solid rgba(255,255,255,0.2);
             padding-top: 30px;
@@ -478,40 +453,104 @@
             color: rgba(255,255,255,0.7);
         }
 
+        /* ==================== SIDE MENU (MOBILE) ==================== */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            height: 100vh;
+            width: 280px;
+            background: white;
+            z-index: 2000;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.1);
+            transition: transform 0.4s ease-in-out;
+            padding: 80px 30px 30px;
+            display: flex;
+            flex-direction: column;
+        }
+        html[dir="rtl"] .side-menu {
+            right: 0;
+            transform: translateX(100%);
+        }
+        html[dir="ltr"] .side-menu {
+            left: 0;
+            transform: translateX(-100%);
+        }
+        .side-menu.is-open {
+            transform: translateX(0);
+        }
+        .side-menu h4 {
+            font-size: 22px;
+            color: var(--primary);
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+        }
+        .side-menu a {
+            text-decoration: none;
+            color: #333;
+            font-size: 18px;
+            padding: 15px 0;
+            font-weight: 500;
+        }
+        .side-menu .contact-info a {
+            font-size: 16px;
+            color: #666;
+            word-break: break-all;
+        }
+        .side-menu .download-app-btn {
+            margin-top: auto; /* Push to bottom */
+            text-align: center;
+        }
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s, visibility 0s 0.4s;
+        }
+        .menu-overlay.is-open {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.4s;
+        }
+
+        /* ============== SCROLL ANIMATION STYLES ============== */
+        .animate-on-scroll {
+            opacity: 0;
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in-up {
+            transform: translateY(30px);
+        }
+        .fade-in {
+            transform: scale(0.95);
+        }
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
         /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 992px) {
+            nav { display: none; }
+            .menu-toggle { display: block; }
+            .full-bleed { padding: 60px 0; }
+        }
+
         @media (max-width: 768px) {
-            .container {
-                padding: 0 15px;
-            }
-        
-            nav {
-                display: none;
-            }
-
-            .menu-toggle {
-                display: block;
-            }
-
-            .hero-text h1 {
-                font-size: 36px;
-            }
-            
-            .hero-text .subtitle {
-                font-size: 18px;
-            }
-
-            .section-title h2 {
-                font-size: 32px;
-            }
-
-            .full-bleed {
-                padding-top: 60px;
-                padding-bottom: 60px;
-            }
+            .hero-text h1 { font-size: 36px; }
+            .hero-text .subtitle { font-size: 18px; }
+            .section-title h2 { font-size: 32px; }
         }
     </style>
 </head>
-<body>
+<body data-lang="ar">
+
     <header>
         <div class="header-content">
             <div class="logo">
@@ -520,201 +559,291 @@
                 </div>
                 <span>WinRah</span>
             </div>
+            
             <nav>
-                <a href="#features">المميزات</a>
-                <a href="#screenshots">لقطات الشاشة</a>
-                <a href="#video">الفيديو</a>
+                <a href="#features"><span lang="ar">المميزات</span><span lang="fr">Fonctionnalités</span></a>
+                <a href="#screenshots"><span lang="ar">لقطات الشاشة</span><span lang="fr">Captures d'écran</span></a>
+                <a href="#video"><span lang="ar">الفيديو</span><span lang="fr">Vidéo</span></a>
+                <a href="#about-us"><span lang="ar">من نحن</span><span lang="fr">À propos</span></a>
             </nav>
-            <a href="https://apk.e-droid.net/apk/app3771562-y2tx5k.apk?v=2" class="download-btn">حمل الآن</a>
-            <button class="menu-toggle">☰</button>
+
+            <div class="header-right">
+                <a href="https://apk.e-droid.net/apk/app3771562-y2tx5k.apk?v=2" class="download-btn">
+                    <span lang="ar">حمل الآن</span><span lang="fr">Télécharger</span>
+                </a>
+                <button class="menu-toggle">☰</button>
+            </div>
         </div>
     </header>
-
-    <section class="hero full-bleed">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-text">
-                     <div class="animate-on-scroll fade-in-up" style="display: inline-block; background: #dbeafe; color: var(--primary); padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: bold; margin-bottom: 20px;">
-                        🚆 تتبع قطارك بسهولة
-                    </div>
-                    <h1 class="animate-on-scroll fade-in-up" style="transition-delay: 0.1s;">WinRah</h1>
-                    <p class="subtitle animate-on-scroll fade-in-up" style="transition-delay: 0.2s;">متابعة مكان القطار لحظة بلحظة</p>
-                    <div class="hero-buttons animate-on-scroll fade-in-up" style="transition-delay: 0.3s;">
-                        <a href="https://apk.e-droid.net/apk/app3771562-y2tx5k.apk?v=2" class="btn-primary">📥 حمل التطبيق الآن</a>
-                    </div>
-                </div>
-                <div class="hero-image animate-on-scroll fade-in" style="transition-delay: 0.4s;">
-                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjQ_2oS_qxH0sWlg5nGLQ1B615EZUPaYn7OiiwC2_mwjTigSWPJtj45ZwQe_eDupvrRJL-2cHgXmnL78xdCiEVH4j6B3cH-feQrRbZJC55We088b5O-Mw1-mSN67C2XCo0UIBfE2aD0UG3htHnawP2Ey6uD1y9LIATl1G1rxgA0RhSCzooBPJXPgCK-uW4/s320/Picsart_24-07-18_12-07-08-795.png" alt="WinRah App Icon">
-                </div>
-            </div>
+    
+    <div class="lang-switcher-bar">
+        <div class="lang-switcher">
+            <button data-lang="ar" class="active">العربية</button>
+            <button data-lang="fr">Français</button>
         </div>
-    </section>
+    </div>
 
-    <section id="features" class="features full-bleed" style="background: white;">
-        <div class="container">
-            <div class="section-title animate-on-scroll fade-in-up">
-                <h2>مميزات التطبيق</h2>
-                <p>كل ما تحتاجه لتجربة سفر مريحة ومنظمة</p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card animate-on-scroll fade-in-up" style="transition-delay: 0.1s;">
-                    <div class="feature-icon">📍</div>
-                    <h3>تتبع مباشر</h3>
-                    <p>شاهد موقع القطار على الخريطة مباشرة وبدون تأخير.</p>
-                </div>
-                <div class="feature-card animate-on-scroll fade-in-up" style="transition-delay: 0.2s;">
-                    <div class="feature-icon">🗺️</div>
-                    <h3>معلومات المحطات</h3>
-                    <p>احصل على تفاصيل دقيقة عن المحطات القادمة ومواعيد الوصول.</p>
-                </div>
-                <div class="feature-card animate-on-scroll fade-in-up" style="transition-delay: 0.3s;">
-                    <div class="feature-icon">🔔</div>
-                    <h3>تنبيهات دقيقة</h3>
-                    <p>استقبل إشعارات فورية عند اقتراب القطار من محطتك.</p>
-                </div>
-                <div class="feature-card animate-on-scroll fade-in-up" style="transition-delay: 0.4s;">
-                    <div class="feature-icon">⚙️</div>
-                    <h3>سهولة الاستخدام</h3>
-                    <p>واجهة بسيطة وواضحة مصممة لتوفير أفضل تجربة استخدام.</p>
-                </div>
-            </div>
+    <div id="side-menu" class="side-menu">
+        <h4><span lang="ar">القائمة الرئيسية</span><span lang="fr">Menu Principal</span></h4>
+        <a href="#about-us"><span lang="ar">من نحن</span><span lang="fr">À propos de nous</span></a>
+        <div class="contact-info">
+             <a href="mailto:algeria.ai007@gmail.com">
+                <span lang="ar">اتصل بنا</span><span lang="fr">Nous Contacter</span>:
+                <br>algeria.ai007@gmail.com
+             </a>
         </div>
-    </section>
+        <div class="download-app-btn">
+             <a href="https://apk.e-droid.net/apk/app3771562-y2tx5k.apk?v=2" class="download-btn">
+                <span lang="ar">تنزيل التطبيق</span><span lang="fr">Télécharger l'app</span>
+             </a>
+        </div>
+    </div>
+    <div id="menu-overlay" class="menu-overlay"></div>
 
-    <section id="screenshots" class="screenshots full-bleed">
-        <div class="container">
-            <div class="section-title animate-on-scroll fade-in-up">
-                <h2>لقطات من التطبيق</h2>
-                <p>ألقِ نظرة على واجهات التطبيق الأنيقة والعملية.</p>
-            </div>
-            <div class="carousel-outer-container animate-on-scroll fade-in" style="transition-delay: 0.2s;">
-                <div class="carousel-container">
-                    <div class="carousel-main">
-                        <div class="carousel-slide">
-                            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhPy9bTKksw_BhN4wuLvmShVQ4_NshKdySV6zYKmyyiyAua0Bd7BjLfO92C8l5arFyyqzhFxn4UKOVbIrlUmsHYjSoSvsoiMRVrrbiFEOU96Wf0uDZsB054LGAfdKDc-SX_gZj0P4b9-LaPg0brl0v8YpMPyUvvszoKm7SW7Rs3s7vjazz4b0QSBD-16hY/s2340/Screenshot_2025-10-21-09-22-34-872_winrah.copy2.jpg" alt="Screenshot 1">
+    <main>
+        <section class="hero full-bleed">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <div class="animate-on-scroll fade-in-up" style="display: inline-block; background: #dbeafe; color: var(--primary); padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: bold; margin-bottom: 20px;">
+                            🚆 <span lang="ar">تتبع قطارك بسهولة</span><span lang="fr">Suivez votre train facilement</span>
                         </div>
-                        <div class="carousel-slide">
-                            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi14jOX4nvfNGC5j1JlIuXjpSrdcDti1w8pkwMNEvMeHl30avbUJJrxL5fJBdSNWBrzIFqa9MtD_mkNnz_RSeE2ppDD1kT-Burfxdu8_kxyu5Ddemrx-bzjIU4s486aA_8BGhM6fVQOu_y0T-Lf18M7FqplNnHYrmefrNQKC3vXLPmbSrAcONwrblbyS8I/s2340/Screenshot_2025-10-21-09-22-59-004_winrah.copy2.jpg" alt="Screenshot 2">
-                        </div>
-                        <div class="carousel-slide">
-                            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhB1c78NsY23Bc59Xc7pmZ0G4D2jsasW7dG_Ek5ETJ20m3fnxms_XG8c_siPJF1UbFL7WKuIg2DXW05pbZXNTnbOM2ct2H3D_OpqTQX6mWpCUKLC3VWKkufV7b0hDF5Rg3G8vKsX_KQUPGJ2wDgL8zNiwTguyxH2EBwO84fi-h8BWQvm5X9A489Snc13J4/s2340/Screenshot_2025-10-21-09-23-09-615_winrah.copy2.jpg" alt="Screenshot 3">
+                        <h1 class="animate-on-scroll fade-in-up" style="transition-delay: 0.1s;">WinRah</h1>
+                        <p class="subtitle animate-on-scroll fade-in-up" style="transition-delay: 0.2s;">
+                            <span lang="ar">متابعة مكان القطار لحظة بلحظة</span>
+                            <span lang="fr">Suivi de la localisation du train en temps réel</span>
+                        </p>
+                        
+                        <div class="download-area animate-on-scroll fade-in-up" style="transition-delay: 0.3s;">
+                             <a href="https://apk.e-droid.net/apk/app3771562-y2tx5k.apk?v=2" class="download-btn">
+                                📥 <span lang="ar">حمل التطبيق الآن</span><span lang="fr">Téléchargez l'application</span>
+                             </a>
+                             <div class="hero-stats">
+                                <div class="stat-item">
+                                    <strong>4.5 ⭐</strong> 
+                                    <span lang="ar">تقييم</span><span lang="fr">Évaluation</span>
+                                </div>
+                                <div class="stat-item">
+                                    <strong>+10K 📥</strong> 
+                                    <span lang="ar">تنزيل</span><span lang="fr">Téléchargements</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="carousel-navigation">
-                     <button class="carousel-btn prev" onclick="prevSlide()">❮</button>
-                     <div class="carousel-dots"></div>
-                     <button class="carousel-btn next" onclick="nextSlide()">❯</button>
+                    <div class="hero-image animate-on-scroll fade-in" style="transition-delay: 0.4s;">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjQ_2oS_qxH0sWlg5nGLQ1B615EZUPaYn7OiiwC2_mwjTigSWPJtj45ZwQe_eDupvrRJL-2cHgXmnL78xdCiEVH4j6B3cH-feQrRbZJC55We088b5O-Mw1-mSN67C2XCo0UIBfE2aD0UG3htHnawP2Ey6uD1y9LIATl1G1rxgA0RhSCzooBPJXPgCK-uW4/s320/Picsart_24-07-18_12-07-08-795.png" alt="WinRah App Icon">
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="video" class="video-section full-bleed" style="background: white;">
-        <div class="container">
-            <div class="section-title animate-on-scroll fade-in-up">
-                <h2>شاهد كيف يعمل</h2>
-                <p>فيديو قصير يوضح طريقة استعمال التطبيق بكل سهولة.</p>
+        <section id="features" class="features full-bleed" style="background: white;">
+            <div class="container">
+                <div class="section-title animate-on-scroll fade-in-up">
+                    <h2><span lang="ar">مميزات التطبيق</span><span lang="fr">Fonctionnalités</span></h2>
+                    <p><span lang="ar">كل ما تحتاجه لتجربة سفر مريحة ومنظمة</span><span lang="fr">Tout ce dont vous avez besoin pour un voyage confortable</span></p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card animate-on-scroll fade-in-up" style="transition-delay: 0.1s;">
+                        <div class="feature-icon">📍</div>
+                        <h3><span lang="ar">تتبع مباشر</span><span lang="fr">Suivi en direct</span></h3>
+                        <p><span lang="ar">شاهد موقع القطار على الخريطة مباشرة وبدون تأخير.</span><span lang="fr">Voyez l'emplacement du train sur la carte en direct.</span></p>
+                    </div>
+                    <div class="feature-card animate-on-scroll fade-in-up" style="transition-delay: 0.2s;">
+                        <div class="feature-icon">🗺️</div>
+                        <h3><span lang="ar">معلومات المحطات</span><span lang="fr">Infos des gares</span></h3>
+                        <p><span lang="ar">احصل على تفاصيل دقيقة عن المحطات القادمة ومواعيد الوصول.</span><span lang="fr">Obtenez les détails des prochaines gares et heures d'arrivée.</span></p>
+                    </div>
+                    <div class="feature-card animate-on-scroll fade-in-up" style="transition-delay: 0.3s;">
+                        <div class="feature-icon">🔔</div>
+                        <h3><span lang="ar">تنبيهات دقيقة</span><span lang="fr">Alertes précises</span></h3>
+                        <p><span lang="ar">استقبل إشعارات فورية عند اقتراب القطار من محطتك.</span><span lang="fr">Recevez des notifications à l'approche de votre gare.</span></p>
+                    </div>
+                    <div class="feature-card animate-on-scroll fade-in-up" style="transition-delay: 0.4s;">
+                        <div class="feature-icon">⚙️</div>
+                        <h3><span lang="ar">سهولة الاستخدام</span><span lang="fr">Facile à utiliser</span></h3>
+                        <p><span lang="ar">واجهة بسيطة وواضحة مصممة لتوفير أفضل تجربة استخدام.</span><span lang="fr">Une interface simple conçue pour la meilleure expérience.</span></p>
+                    </div>
+                </div>
             </div>
-            <div class="video-player animate-on-scroll fade-in" style="transition-delay: 0.2s;">
-                <iframe src="https://www.youtube.com/embed/lbCnDPqWQAM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </section>
+
+        <section id="screenshots" class="screenshots full-bleed">
+            <div class="container">
+                <div class="section-title animate-on-scroll fade-in-up">
+                    <h2><span lang="ar">لقطات من التطبيق</span><span lang="fr">Captures d'écran</span></h2>
+                    <p><span lang="ar">ألقِ نظرة على واجهات التطبيق الأنيقة والعملية.</span><span lang="fr">Jetez un œil à nos interfaces élégantes et fonctionnelles.</span></p>
+                </div>
+                <div class="carousel-outer-container animate-on-scroll fade-in" style="transition-delay: 0.2s;">
+                    <div class="carousel-container">
+                        <div class="carousel-main">
+                            <!-- ========= IMAGES WITH CORRECTED SRC ATTRIBUTES ========= -->
+                            <div class="carousel-slide">
+                                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEin-84HylaTqpfa32LUgSQPsi22XjWOGsOkiN-4seEugOGte2iTYWirdrTznDXRAZeVzkWXiFn1EbhTY62dXC1bpmgq45hv2l5QhCqW2e5XizFuY3xHdzpBSWj4Dv8iH0QPzZXV9PFw-Vfw3kNazlSutTy1PwXId3eHb4wJfuait14zhxkmd1uIWXGGwUY/s1600/Picsart_25-10-22_18-46-45-143.png" alt="Screenshot 1">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjlU5ta7we7-gSMHi6t8RpeQ2Dz0V9qbjAZv-mO_XoqMRnW6B7BUJjLiEddgBtjZgOlhcxXrWyI__TzsL7045dxnO_ya_gulV69BcsxfGgRKaK8rX4QvqKotfERTtLwMNnLLhgrsXeqPhrNvt5EXJyhyefKelaTx1e4HXQcVaF4RvVYxiKplazmu5w9g8A/s1600/Picsart_25-10-22_18-45-59-342.png" alt="Screenshot 2">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjBMVnxtmjuBIhSVG-eoROIAjGSorHDKeXHl1TGz5zoYByERL6HSrOE4M2LnxoFlxuFeBeICjyH7nwYAZn9vNV44tk5o1Dq9nKx6hXeOPsnbTpcwkAdFkfneVM46ixYRH-_Vdj1BCPcxf9QnKDEIl5QTDx-uLdA05FsXnPkbnJSp6b1HoTly0tO1Izwy-M/s1600/Picsart_25-10-22_18-45-17-997.png" alt="Screenshot 3">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-navigation">
+                         <button class="carousel-btn prev">❮</button>
+                         <div class="carousel-dots"></div>
+                         <button class="carousel-btn next">❯</button>
+                    </div>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+        <section id="video" class="video-section full-bleed" style="background: white;">
+            <div class="container">
+                <div class="section-title animate-on-scroll fade-in-up">
+                    <h2><span lang="ar">شاهد كيف يعمل</span><span lang="fr">Voyez comment ça marche</span></h2>
+                    <p><span lang="ar">فيديو قصير يوضح طريقة استعمال التطبيق بكل سهولة.</span><span lang="fr">Une courte vidéo qui explique comment utiliser l'application.</span></p>
+                </div>
+                <div class="video-player animate-on-scroll fade-in" style="transition-delay: 0.2s;">
+                    <iframe src="https://www.youtube.com/embed/79wFjChvcoY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </div>
+        </section>
+
+        <section id="about-us" class="about-us full-bleed">
+            <div class="container">
+                <div class="section-title animate-on-scroll fade-in-up">
+                    <h2><span lang="ar">من نحن</span><span lang="fr">À propos de nous</span></h2>
+                </div>
+                <div class="about-us-content animate-on-scroll fade-in-up" style="transition-delay: 0.1s;">
+                    <p><span lang="ar">مشروع ناشئ في طور التحول الى مؤسسة ناشئة.</span><span lang="fr">Un projet émergent en voie de devenir une startup.</span></p>
+                    <p class="label-info">
+                        <span lang="ar">متحصل على وسم <strong>مشروع مبتكر</strong> ممنوحة من طرف وزارة اقتصاد المعرفة و المؤسسات الناشئة سنة 2024.</span>
+                        <span lang="fr">A obtenu le label <strong>'Projet Innovant'</strong> décerné par le Ministère de l'Économie de la Connaissance et des Startups en 2024.</span>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <footer class="full-bleed">
         <div class="container">
-            <div class="footer-grid">
-                <div class="footer-section">
-                    <div class="footer-logo">
-                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjQ_2oS_qxH0sWlg5nGLQ1B615EZUPaYn7OiiwC2_mwjTigSWPJtj45ZwQe_eDupvrRJL-2cHgXmnL78xdCiEVH4j6B3cH-feQrRbZJC55We088b5O-Mw1-mSN67C2XCo0UIBfE2aD0UG3htHnawP2Ey6uD1y9LIATl1G1rxgA0RhSCzooBPJXPgCK-uW4/s1536/Picsart_24-07-18_12-07-08-795.png" alt="WinRah Logo">
-                        <div class="footer-logo-text">WinRah</div>
-                    </div>
-                    <p class="footer-desc">رفيقك الأول في رحلات القطار.</p>
-                </div>
-                <div class="footer-section">
-                    <h4>الروابط السريعة</h4>
-                    <ul>
-                        <li><a href="#">الرئيسية</a></li>
-                        <li><a href="#features">المميزات</a></li>
-                        <li><a href="#screenshots">لقطات الشاشة</a></li>
-                        <li><a href="#video">الفيديو</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>الدعم</h4>
-                    <ul>
-                        <li><a href="#">الأسئلة الشائعة</a></li>
-                        <li><a href="#">الدعم الفني</a></li>
-                        <li><a href="#">سياسة الخصوصية</a></li>
-                        <li><a href="#">الشروط والأحكام</a></li>
-                    </ul>
-                </div>
-            </div>
+            <p style="text-align:center; font-size:24px; font-weight:bold; margin-bottom: 40px;">WinRah</p>
             <div class="footer-bottom">
-                <p>© 2025 WinRah. جميع الحقوق محفوظة.</p>
+                <p>© 2025 WinRah. <span lang="ar">جميع الحقوق محفوظة.</span><span lang="fr">Tous droits réservés.</span></p>
             </div>
         </div>
     </footer>
 
     <script>
-        // ==================== CAROUSEL SCRIPT ==================== 
-        const carouselMain = document.querySelector('.carousel-main');
-        const slides = document.querySelectorAll('.carousel-slide');
-        const dotsContainer = document.querySelector('.carousel-dots');
-        let currentSlide = 0;
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            // ==================== LANGUAGE SWITCHER ====================
+            const langButtons = document.querySelectorAll('.lang-switcher button');
+            const body = document.body;
+            const html = document.documentElement;
 
-        if (slides.length > 0) {
-            slides.forEach((_, i) => {
-                const dot = document.createElement('button');
-                dot.classList.add('dot');
-                if (i === 0) dot.classList.add('active');
-                dot.addEventListener('click', () => goToSlide(i));
-                dotsContainer.appendChild(dot);
+            langButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const lang = button.dataset.lang;
+                    
+                    body.dataset.lang = lang;
+                    html.lang = lang;
+                    html.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+                    langButtons.forEach(btn => btn.classList.remove('active'));
+                    document.querySelectorAll(`.lang-switcher button[data-lang="${lang}"]`).forEach(b => b.classList.add('active'));
+                });
+            });
+
+            // ==================== CAROUSEL SCRIPT (FIXED) ==================== 
+            const carouselMain = document.querySelector('.carousel-main');
+            if (carouselMain) {
+                const slides = carouselMain.querySelectorAll('.carousel-slide');
+                const dotsContainer = document.querySelector('.carousel-dots');
+                const prevBtn = document.querySelector('.carousel-btn.prev');
+                const nextBtn = document.querySelector('.carousel-btn.next');
+                let currentSlide = 0;
+
+                if (slides.length > 1 && dotsContainer && prevBtn && nextBtn) {
+                    slides.forEach((_, i) => {
+                        const dot = document.createElement('button');
+                        dot.classList.add('dot');
+                        if (i === 0) dot.classList.add('active');
+                        dot.addEventListener('click', () => goToSlide(i));
+                        dotsContainer.appendChild(dot);
+                    });
+                    
+                    const dots = dotsContainer.querySelectorAll('.dot');
+
+                    function updateCarousel() {
+                        carouselMain.style.transform = `translateX(-${currentSlide * 100}%)`;
+                        if (dots.length > 0) {
+                            dots.forEach(dot => dot.classList.remove('active'));
+                            dots[currentSlide].classList.add('active');
+                        }
+                    }
+
+                    function showNextSlide() {
+                        currentSlide = (currentSlide + 1) % slides.length;
+                        updateCarousel();
+                    }
+
+                    function showPrevSlide() {
+                        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                        updateCarousel();
+                    }
+
+                    function goToSlide(n) {
+                        currentSlide = n;
+                        updateCarousel();
+                    }
+
+                    nextBtn.addEventListener('click', showNextSlide);
+                    prevBtn.addEventListener('click', showPrevSlide);
+                    
+                    setInterval(showNextSlide, 5000); // Auto-play
+                }
+            }
+
+            // ==================== SIDE MENU TOGGLE ====================
+            const menuToggle = document.querySelector('.menu-toggle');
+            const sideMenu = document.getElementById('side-menu');
+            const menuOverlay = document.getElementById('menu-overlay');
+
+            if (menuToggle && sideMenu && menuOverlay) {
+                function openMenu() {
+                    sideMenu.classList.add('is-open');
+                    menuOverlay.classList.add('is-open');
+                }
+                function closeMenu() {
+                    sideMenu.classList.remove('is-open');
+                    menuOverlay.classList.remove('is-open');
+                }
+
+                menuToggle.addEventListener('click', openMenu);
+                menuOverlay.addEventListener('click', closeMenu);
+                
+                sideMenu.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', closeMenu);
+                });
+            }
+
+            // ==================== SCROLL ANIMATION SCRIPT ====================
+            const animatedElements = document.querySelectorAll('.animate-on-scroll');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1
             });
             
-            const dots = document.querySelectorAll('.dot');
-
-            function updateCarousel() {
-                carouselMain.style.transform = `translateX(-${currentSlide * 100}%)`;
-                dots.forEach(dot => dot.classList.remove('active'));
-                dots[currentSlide].classList.add('active');
-            }
-
-            function nextSlide() {
-                currentSlide = (currentSlide + 1) % slides.length;
-                updateCarousel();
-            }
-
-            function prevSlide() {
-                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-                updateCarousel();
-            }
-
-            function goToSlide(n) {
-                currentSlide = n;
-                updateCarousel();
-            }
-        }
-        
-        // ==================== SCROLL ANIMATION SCRIPT ====================
-        const animatedElements = document.querySelectorAll('.animate-on-scroll');
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, {
-            threshold: 0.1 // نسبة ظهور العنصر قبل تفعيل الأنيميشن
+            animatedElements.forEach(el => observer.observe(el));
         });
-        
-        animatedElements.forEach(el => {
-            observer.observe(el);
-        });
-
     </script>
 </body>
 </html>
