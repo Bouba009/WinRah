@@ -1,13 +1,18 @@
 <!DOCTYPE html>
-<!-- يبدأ باللغة العربية افتراضياً -->
-<html lang="ar" dir="rtl">
+<!-- يبدأ باللغة الفرنسية افتراضياً -->
+<html lang="fr" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
+    <!-- Google Fonts: Poppins (Latin) & Cairo (Arabic) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700&family=Poppins:wght@400;500;700;800&display=swap" rel="stylesheet">
+
     <!-- Title in Both Languages -->
-    <title lang="ar">WinRah - متابعة مكان القطار</title>
-    <title lang="fr" style="display:none;">WinRah - Suivi de la localisation du train</title>
+    <title lang="fr">WinRah - Suivi de la localisation du train</title>
+    <title lang="ar" style="display:none;">WinRah - متابعة مكان القطار</title>
 
     <style>
         * {
@@ -29,7 +34,8 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Default Font: Poppins for French */
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #333;
             background: white;
@@ -38,6 +44,11 @@
             transition: all 0.3s ease;
         }
         
+        /* Font for Arabic */
+        html[dir="rtl"] body {
+            font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
         /* Language Specific Styles */
         body[data-lang="fr"] [lang="ar"] { display: none; }
         body[data-lang="ar"] [lang="fr"] { display: none; }
@@ -160,6 +171,7 @@
             font-weight: bold;
             color: #666;
             transition: background-color 0.3s, color 0.3s;
+            font-family: 'Poppins', sans-serif;
         }
         .lang-switcher button.active {
             background-color: var(--primary);
@@ -478,6 +490,14 @@
         .side-menu.is-open {
             transform: translateX(0);
         }
+        .side-menu-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .side-menu-links {
+            flex-grow: 1;
+        }
         .side-menu h4 {
             font-size: 22px;
             color: var(--primary);
@@ -490,15 +510,30 @@
             color: #333;
             font-size: 18px;
             padding: 15px 0;
+            display: block;
             font-weight: 500;
         }
+        .side-menu .contact-info {
+            border-top: 1px solid var(--border);
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+        .side-menu .contact-info-title {
+            font-size: 18px;
+            font-weight: 500;
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
         .side-menu .contact-info a {
-            font-size: 16px;
+            font-size: 14px;
             color: #666;
             word-break: break-all;
+            padding: 5px 0;
         }
         .side-menu .download-app-btn {
-            margin-top: auto; /* Push to bottom */
+            margin-top: auto;
+            padding-top: 20px;
             text-align: center;
         }
         .menu-overlay {
@@ -549,7 +584,7 @@
         }
     </style>
 </head>
-<body data-lang="ar">
+<body data-lang="fr">
 
     <header>
         <div class="header-content">
@@ -563,7 +598,7 @@
             <nav>
                 <a href="#features"><span lang="ar">المميزات</span><span lang="fr">Fonctionnalités</span></a>
                 <a href="#screenshots"><span lang="ar">لقطات الشاشة</span><span lang="fr">Captures d'écran</span></a>
-                <a href="#video"><span lang="ar">الفيديو</span><span lang="fr">Vidéo</span></a>
+                <a href="#video"><span lang="ar">Vidéo</span><span lang="fr">Vidéo</span></a>
                 <a href="#about-us"><span lang="ar">من نحن</span><span lang="fr">À propos</span></a>
             </nav>
 
@@ -578,24 +613,27 @@
     
     <div class="lang-switcher-bar">
         <div class="lang-switcher">
-            <button data-lang="ar" class="active">العربية</button>
-            <button data-lang="fr">Français</button>
+            <button data-lang="ar">العربية</button>
+            <button data-lang="fr" class="active">Français</button>
         </div>
     </div>
 
     <div id="side-menu" class="side-menu">
-        <h4><span lang="ar">القائمة الرئيسية</span><span lang="fr">Menu Principal</span></h4>
-        <a href="#about-us"><span lang="ar">من نحن</span><span lang="fr">À propos de nous</span></a>
-        <div class="contact-info">
-             <a href="mailto:algeria.ai007@gmail.com">
-                <span lang="ar">اتصل بنا</span><span lang="fr">Nous Contacter</span>:
-                <br>algeria.ai007@gmail.com
-             </a>
-        </div>
-        <div class="download-app-btn">
-             <a href="https://apk.e-droid.net/apk/app3771562-y2tx5k.apk?v=2" class="download-btn">
-                <span lang="ar">تنزيل التطبيق</span><span lang="fr">Télécharger l'app</span>
-             </a>
+        <div class="side-menu-content">
+            <div class="side-menu-links">
+                <a href="#"><span lang="ar">القائمة الرئيسية</span><span lang="fr">Accueil</span></a>
+                <a href="#about-us"><span lang="ar">من نحن</span><span lang="fr">À propos de nous</span></a>
+                <a href="#"><span lang="ar">سياسة الخصوصية</span><span lang="fr">Politique de confidentialité</span></a>
+                <div class="contact-info">
+                    <span class="contact-info-title"><span lang="ar">اتصل بنا</span><span lang="fr">Nous Contacter</span></span>
+                     <a href="mailto:algeria.ai007@gmail.com">algeria.ai007@gmail.com</a>
+                </div>
+            </div>
+            <div class="download-app-btn">
+                 <a href="https://apk.e-droid.net/apk/app3771562-y2tx5k.apk?v=2" class="download-btn">
+                    <span lang="ar">تنزيل التطبيق</span><span lang="fr">Télécharger l'app</span>
+                 </a>
+            </div>
         </div>
     </div>
     <div id="menu-overlay" class="menu-overlay"></div>
@@ -605,9 +643,6 @@
             <div class="container">
                 <div class="hero-content">
                     <div class="hero-text">
-                        <div class="animate-on-scroll fade-in-up" style="display: inline-block; background: #dbeafe; color: var(--primary); padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: bold; margin-bottom: 20px;">
-                            🚆 <span lang="ar">تتبع قطارك بسهولة</span><span lang="fr">Suivez votre train facilement</span>
-                        </div>
                         <h1 class="animate-on-scroll fade-in-up" style="transition-delay: 0.1s;">WinRah</h1>
                         <p class="subtitle animate-on-scroll fade-in-up" style="transition-delay: 0.2s;">
                             <span lang="ar">متابعة مكان القطار لحظة بلحظة</span>
