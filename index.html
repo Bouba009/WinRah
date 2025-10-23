@@ -263,7 +263,6 @@
 
         .hero-image {
             position: relative;
-            /* ========= IMAGE SIZE REDUCED HERE ========= */
             max-width: 260px; 
             margin: 40px auto 0;
         }
@@ -271,9 +270,8 @@
         .hero-image img {
             width: 100%;
             height: auto;
-            border-radius: 40px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
             transition: transform 0.4s ease;
+            filter: drop-shadow(0 15px 25px rgba(37, 99, 235, 0.15));
         }
         .hero-image:hover img {
             transform: scale(1.05);
@@ -466,19 +464,19 @@
             color: rgba(255,255,255,0.7);
         }
 
-        /* ==================== SIDE MENU (MOBILE) ==================== */
+        /* ========= SIDE MENU (MOBILE) (CORRECTED & SIMPLIFIED) ========= */
         .side-menu {
             position: fixed;
             top: 0;
-            height: 100vh;
+            height: 100%;
             width: 280px;
             background: white;
             z-index: 2000;
-            box-shadow: -5px 0 20px rgba(0,0,0,0.1);
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
             transition: transform 0.4s ease-in-out;
-            padding: 80px 30px 30px;
             display: flex;
             flex-direction: column;
+            padding: 20px;
         }
         html[dir="rtl"] .side-menu {
             right: 0;
@@ -495,46 +493,41 @@
             display: flex;
             flex-direction: column;
             height: 100%;
+            padding-top: 60px; /* Space from top */
         }
         .side-menu-links {
             flex-grow: 1;
         }
-        .side-menu h4 {
-            font-size: 22px;
-            color: var(--primary);
-            margin-bottom: 25px;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 10px;
-        }
-        .side-menu a {
+        .side-menu-links a {
             text-decoration: none;
             color: #333;
             font-size: 18px;
-            padding: 15px 0;
+            padding: 15px 10px;
             display: block;
             font-weight: 500;
+            border-bottom: 1px solid var(--border);
         }
-        .side-menu .contact-info {
-            border-top: 1px solid var(--border);
-            padding-top: 15px;
-            margin-top: 15px;
+        .side-menu-contact {
+            padding: 15px 10px;
+            border-bottom: 1px solid var(--border);
         }
-        .side-menu .contact-info-title {
+        .side-menu-contact span {
             font-size: 18px;
             font-weight: 500;
             color: #333;
             display: block;
             margin-bottom: 5px;
         }
-        .side-menu .contact-info a {
-            font-size: 14px;
-            color: #666;
+        .side-menu-contact a {
+            text-decoration: none;
+            font-size: 15px;
+            color: var(--primary);
+            font-weight: 400;
             word-break: break-all;
-            padding: 5px 0;
         }
         .side-menu .download-app-btn {
             margin-top: auto;
-            padding-top: 20px;
+            padding: 20px 0;
             text-align: center;
         }
         .menu-overlay {
@@ -619,20 +612,21 @@
         </div>
     </div>
 
+    <!-- ========= SIDE MENU UPDATED HERE ========= -->
     <div id="side-menu" class="side-menu">
         <div class="side-menu-content">
             <div class="side-menu-links">
-                <a href="#"><span lang="ar">القائمة الرئيسية</span><span lang="fr">Accueil</span></a>
+                <a href="#"><span lang="ar">الصفحة الرئيسية</span><span lang="fr">Accueil</span></a>
                 <a href="#about-us"><span lang="ar">من نحن</span><span lang="fr">À propos de nous</span></a>
-                <a href="#"><span lang="ar">سياسة الخصوصية</span><span lang="fr">Politique de confidentialité</span></a>
-                <div class="contact-info">
-                    <span class="contact-info-title"><span lang="ar">اتصل بنا</span><span lang="fr">Nous Contacter</span></span>
-                     <a href="mailto:algeria.ai007@gmail.com">algeria.ai007@gmail.com</a>
+                <div class="side-menu-contact">
+                    <span><span lang="ar">اتصل بنا</span><span lang="fr">Nous contacter</span></span>
+                    <a href="mailto:algeria.ai007@gmail.com">algeria.ai007@gmail.com</a>
                 </div>
+                <a href="#"><span lang="ar">سياسة الخصوصية</span><span lang="fr">Politique de confidentialité</span></a>
             </div>
             <div class="download-app-btn">
                  <a href="https://apk.e-droid.net/apk/app3771562-y2tx5k.apk?v=2" class="download-btn">
-                    <span lang="ar">تنزيل التطبيق</span><span lang="fr">Télécharger l'app</span>
+                    <span lang="ar">حمل التطبيق</span><span lang="fr">Télécharger l'app</span>
                  </a>
             </div>
         </div>
@@ -793,7 +787,7 @@
                 });
             });
 
-            // ==================== CAROUSEL SCRIPT (FIXED) ==================== 
+            // ==================== CAROUSEL SCRIPT ==================== 
             const carouselMain = document.querySelector('.carousel-main');
             if (carouselMain) {
                 const slides = carouselMain.querySelectorAll('.carousel-slide');
