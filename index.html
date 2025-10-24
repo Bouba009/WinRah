@@ -211,7 +211,7 @@
             border: none;
             font-size: 24px;
             cursor: pointer;
-            z-index: 1001;
+            z-index: 2001; /* Must be above side menu */
         }
 
         /* ==================== HERO ==================== */
@@ -522,36 +522,36 @@
             color: rgba(255,255,255,0.7);
         }
 
-        /* ==================== SIDE MENU (MOBILE) ==================== */
+        /* ========= SIDE MENU (MOBILE) (CORRECTED) ========= */
         .side-menu {
             position: fixed;
             top: 0;
-            height: 100%;
+            height: 100vh;
             width: 280px;
-            background: white;
+            background: #fff;
             z-index: 2000;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            transition: transform 0.4s ease-in-out;
+            box-shadow: 0 0 20px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease-in-out;
             display: flex;
             flex-direction: column;
-            padding: 20px;
+            padding-top: 70px; /* Space from top */
         }
         html[dir="rtl"] .side-menu {
-            right: 0;
-            transform: translateX(100%);
+            right: -280px; /* Start off-screen */
         }
         html[dir="ltr"] .side-menu {
-            left: 0;
-            transform: translateX(-100%);
+            left: -280px; /* Start off-screen */
         }
         .side-menu.is-open {
-            transform: translateX(0);
+            transform: translateX(280px);
+        }
+        html[dir="rtl"] .side-menu.is-open {
+            transform: translateX(-280px);
         }
         .side-menu-content {
             display: flex;
             flex-direction: column;
             height: 100%;
-            padding-top: 60px; /* Space from top */
         }
         .side-menu-links {
             flex-grow: 1;
@@ -560,33 +560,58 @@
             text-decoration: none;
             color: #333;
             font-size: 18px;
-            padding: 15px 10px;
+            padding: 15px 20px;
             display: block;
             font-weight: 500;
             border-bottom: 1px solid var(--border);
         }
-        .side-menu-contact {
-            padding: 15px 10px;
-            border-bottom: 1px solid var(--border);
-        }
-        .side-menu-contact span {
+        .side-menu-accordion {
+            background: none;
+            border: none;
+            padding: 15px 20px;
+            width: 100%;
+            text-align: inherit;
             font-size: 18px;
             font-weight: 500;
             color: #333;
-            display: block;
-            margin-bottom: 5px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            font-family: inherit;
         }
-        .side-menu-contact a {
+        .accordion-icon {
+            font-size: 24px;
+            font-weight: bold;
+            transition: transform 0.3s ease-out;
+        }
+        .side-menu-accordion.is-active .accordion-icon {
+            transform: rotate(45deg);
+        }
+        .accordion-panel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background: #f8fafc;
+        }
+        .accordion-panel.is-open {
+            max-height: 100px;
+        }
+        .accordion-panel a {
             text-decoration: none;
             font-size: 15px;
             color: var(--primary);
             font-weight: 400;
             word-break: break-all;
+            display: block;
+            padding: 10px 20px;
         }
-        .side-menu .download-app-btn {
-            margin-top: auto;
-            padding: 20px 0;
+
+        .side-menu-footer {
+            padding: 20px;
             text-align: center;
+            margin-top: auto;
         }
         .menu-overlay {
             position: fixed;
@@ -598,12 +623,12 @@
             z-index: 1999;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.4s, visibility 0s 0.4s;
+            transition: opacity 0.3s, visibility 0s 0.3s;
         }
         .menu-overlay.is-open {
             opacity: 1;
             visibility: visible;
-            transition: opacity 0.4s;
+            transition: opacity 0.3s;
         }
 
         /* ============== SCROLL ANIMATION STYLES ============== */
@@ -670,18 +695,24 @@
         </div>
     </div>
 
+    <!-- ========= SIDE MENU UPDATED HERE ========= -->
     <div id="side-menu" class="side-menu">
         <div class="side-menu-content">
             <div class="side-menu-links">
                 <a href="#"><span lang="ar">الصفحة الرئيسية</span><span lang="fr">Accueil</span></a>
                 <a href="#about-us"><span lang="ar">من نحن</span><span lang="fr">À propos de nous</span></a>
-                <div class="side-menu-contact">
-                    <span><span lang="ar">اتصل بنا</span><span lang="fr">Nous contacter</span></span>
-                    <a href="mailto:algeria.ai007@gmail.com">algeria.ai007@gmail.com</a>
+                <div>
+                    <button class="side-menu-accordion">
+                        <span><span lang="ar">اتصل بنا</span><span lang="fr">Nous contacter</span></span>
+                        <span class="accordion-icon">+</span>
+                    </button>
+                    <div class="accordion-panel">
+                        <a href="mailto:algeria.ai007@gmail.com">algeria.ai007@gmail.com</a>
+                    </div>
                 </div>
                 <a href="#"><span lang="ar">سياسة الخصوصية</span><span lang="fr">Politique de confidentialité</span></a>
             </div>
-            <div class="download-app-btn">
+            <div class="side-menu-footer">
                  <a href="https://apk.e-droid.net/apk/app3771562-y2tx5k.apk?v=4" class="download-btn">
                     <span lang="ar">حمل التطبيق</span><span lang="fr">Télécharger l'app</span>
                  </a>
@@ -916,7 +947,7 @@
                 }
             }
 
-            // ==================== SIDE MENU TOGGLE ====================
+            // ==================== SIDE MENU TOGGLE & ACCORDION (CORRECTED) ====================
             const menuToggle = document.querySelector('.menu-toggle');
             const sideMenu = document.getElementById('side-menu');
             const menuOverlay = document.getElementById('menu-overlay');
@@ -935,8 +966,20 @@
                 menuOverlay.addEventListener('click', closeMenu);
                 
                 sideMenu.querySelectorAll('a').forEach(link => {
-                    link.addEventListener('click', closeMenu);
+                    if (!link.parentElement.classList.contains('accordion-panel')) {
+                        link.addEventListener('click', closeMenu);
+                    }
                 });
+
+                // Accordion functionality
+                const accordionBtn = document.querySelector('.side-menu-accordion');
+                if(accordionBtn) {
+                    accordionBtn.addEventListener('click', function() {
+                        this.classList.toggle('is-active');
+                        const panel = this.nextElementSibling;
+                        panel.classList.toggle('is-open');
+                    });
+                }
             }
 
             // ==================== SCROLL ANIMATION SCRIPT ====================
