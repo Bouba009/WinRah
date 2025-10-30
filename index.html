@@ -7,18 +7,28 @@
     
     <!-- SEO Meta Tags -->
     <meta name="description" content="Téléchargez l'application WinRah pour le suivi en temps réel des trains SNTF en Algérie. | حمل تطبيق وين راه للمتابعة اللحظية لموقع قطارات SNTF في الجزائر.">
-    <meta name="keywords" content="Winrah, winrah apk, winrah app, winrah train, winrah sntf, train dz, sntf, train en Algérie, وين راه, تطبيق وينراه, تطبيق وين راه, تحميل تطبيق وين راه, تطبيق القطارات في الجزائر, تتبع القطارات في الجزائر, تتبع القطار, السكة الحديدية الجزائر">
+    <meta name="keywords" content="Winrah, winrah apk, winrah app, winrah train, winrah sntf, train dz, sntf, train en Algérie, وين راه, تطبيق وينراه, تطبيق وين راه, تحميل تطبيق وين راه, تطبيق القطارات في الجزائر, تتبع القطارات في الجزائر, تتبع القطار, السكة الحديدية الجزائر, تتبع القطار DZ">
     
     <!-- Google Fonts: Poppins (Latin) & Cairo (Arabic) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700&family=Poppins:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Title in Both Languages -->
     <title lang="fr">WinRah - Suivi de la localisation du train</title>
     <title lang="ar" style="display:none;">WinRah - متابعة مكان القطار</title>
 
+    <!-- Libraries for Live Tracker -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <style>
+        /* ========================================
+           LANDING PAGE STYLES (Original Code)
+           ======================================== */
         * {
             margin: 0;
             padding: 0;
@@ -80,7 +90,6 @@
             padding-bottom: 80px;
         }
         
-        /* ==================== HEADER ==================== */
         header {
             position: sticky;
             top: 0;
@@ -215,10 +224,9 @@
             border: none;
             font-size: 24px;
             cursor: pointer;
-            z-index: 2001; /* Must be above side menu */
+            z-index: 2001;
         }
-
-        /* ==================== HERO ==================== */
+        
         .hero {
             background: linear-gradient(135deg, #f0f9ff 0%, white 100%);
         }
@@ -264,7 +272,6 @@
             color: var(--primary);
         }
 
-
         .hero-image {
             position: relative;
             max-width: 260px; 
@@ -281,8 +288,7 @@
             transform: scale(1.05);
         }
         
-        /* ==================== FEATURES & Others ==================== */
-         .section-title {
+        .section-title {
             text-align: center;
             margin-bottom: 60px;
         }
@@ -339,7 +345,6 @@
             margin-bottom: 10px;
         }
         
-        /* ==================== SCREENSHOTS CAROUSEL ==================== */
         .screenshots {
             background: linear-gradient(135deg, white 0%, #f0f9ff 100%);
         }
@@ -423,7 +428,6 @@
             border-radius: 6px;
         }
         
-        /* ==================== VIDEO SECTION ==================== */
         .video-player {
             position: relative;
             aspect-ratio: 16 / 9;
@@ -439,7 +443,6 @@
             border: 0;
         }
         
-        /* ==================== ABOUT US ==================== */
         .about-us { background: #f8fafc; }
         .about-us-content {
             max-width: 800px;
@@ -458,7 +461,6 @@
         html[dir="rtl"] .about-us-content .label-info { border-right: 4px solid var(--primary); }
         html[dir="ltr"] .about-us-content .label-info { border-left: 4px solid var(--primary); }
         
-        /* ==================== FOOTER ==================== */
         footer { 
             background: var(--dark); 
             color: white; 
@@ -526,7 +528,6 @@
             color: rgba(255,255,255,0.7);
         }
 
-        /* ========= SIDE MENU (MOBILE) (CORRECTED) ========= */
         .side-menu {
             position: fixed;
             top: 0;
@@ -538,13 +539,13 @@
             transition: transform 0.3s ease-in-out;
             display: flex;
             flex-direction: column;
-            padding-top: 70px; /* Space from top */
+            padding-top: 70px;
         }
         html[dir="rtl"] .side-menu {
-            right: -280px; /* Start off-screen */
+            right: -280px;
         }
         html[dir="ltr"] .side-menu {
-            left: -280px; /* Start off-screen */
+            left: -280px;
         }
         .side-menu.is-open {
             transform: translateX(280px);
@@ -635,7 +636,6 @@
             transition: opacity 0.3s;
         }
 
-        /* ============== SCROLL ANIMATION STYLES ============== */
         .animate-on-scroll {
             opacity: 0;
             transition: opacity 0.6s ease-out, transform 0.6s ease-out;
@@ -651,7 +651,6 @@
             transform: translateY(0) scale(1);
         }
 
-        /* ==================== RESPONSIVE ==================== */
         @media (max-width: 992px) {
             nav { display: none; }
             .menu-toggle { display: block; }
@@ -662,6 +661,733 @@
             .hero-text h1 { font-size: 36px; }
             .hero-text .subtitle { font-size: 18px; }
             .section-title h2 { font-size: 32px; }
+        }
+
+        /* ========================================================
+           LIVE TRAIN TRACKER STYLES (Scoped to #live-tracker)
+           ======================================================== */
+        #live-tracker {
+            --primary: #1e40af;
+            --primary-light: #3b82f6;
+            --primary-dark: #003366;
+            --accent: #1E90FF;
+            --accent-light: #fb923c;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #live-tracker.light-mode {
+            --dark-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        #live-tracker * {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        #live-tracker {
+            font-family: 'Cairo', 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1a2f4d 100%);
+            color: var(--text-primary);
+            direction: rtl;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background 0.3s ease;
+        }
+
+        #live-tracker.light-mode {
+            background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+        }
+
+        #live-tracker .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        #live-tracker .header {
+            text-align: center;
+            padding: 40px 30px;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, rgba(30, 64, 175, 0.15) 0%, rgba(249, 115, 22, 0.1) 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(10px);
+            animation: tracker-slideDown 0.6s ease-out;
+            position: relative;
+        }
+
+        #live-tracker.light-mode .header {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(249, 115, 22, 0.05) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        @keyframes tracker-slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #live-tracker .theme-toggle-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            animation: tracker-fadeIn 0.6s ease-out;
+        }
+
+        #live-tracker .theme-toggle {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            box-shadow: var(--shadow-md);
+        }
+
+        #live-tracker .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-lg);
+        }
+
+        #live-tracker .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
+        #live-tracker .header h1 {
+            color: var(--text-primary);
+            font-size: 2.8em;
+            margin: 0 0 15px 0;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        #live-tracker .header h1 .fa-train {
+            color: var(--accent);
+            font-size: 1.1em;
+            animation: tracker-bounce 2s infinite;
+        }
+
+        @keyframes tracker-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        #live-tracker .header p {
+            color: var(--text-secondary);
+            font-size: 1.1em;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        #live-tracker .step-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.6) 100%);
+            padding: 35px;
+            margin-bottom: 30px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+            animation: tracker-fadeInUp 0.6s ease-out;
+        }
+
+        #live-tracker.light-mode .step-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 249, 255, 0.8) 100%);
+        }
+
+        @keyframes tracker-fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #live-tracker .step-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-light);
+            box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.3);
+        }
+
+        #live-tracker h2, #live-tracker h3 {
+            color: var(--text-primary);
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--accent);
+            display: inline-block;
+            margin-bottom: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        #live-tracker h2 .fas, #live-tracker h3 .fas {
+            margin-left: 12px;
+            color: var(--accent);
+        }
+        
+        #live-tracker #map-container {
+            height: 500px;
+            width: 100%;
+            border-radius: 16px;
+            box-shadow: var(--shadow-xl);
+            border: 2px solid var(--border-color);
+            overflow: hidden;
+            animation: tracker-fadeIn 0.8s ease-out;
+        }
+
+        @keyframes tracker-fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        #live-tracker .custom-dropdown {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 20px;
+        }
+
+        #live-tracker .dropdown-header {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.7) 100%);
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.05em;
+            font-weight: 600;
+            color: var(--text-primary);
+            transition: var(--transition);
+            box-shadow: var(--shadow-md);
+        }
+
+        #live-tracker.light-mode .dropdown-header {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 249, 255, 0.9) 100%);
+        }
+
+        #live-tracker .dropdown-header:hover {
+            border-color: var(--primary-light);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(30, 41, 59, 0.9) 100%);
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+        }
+
+        #live-tracker.light-mode .dropdown-header:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(240, 249, 255, 0.95) 100%);
+        }
+
+        #live-tracker .dropdown-header.active {
+            border-color: var(--primary-light);
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(30, 41, 59, 0.95) 100%);
+        }
+
+        #live-tracker.light-mode .dropdown-header.active {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(240, 249, 255, 0.98) 100%);
+        }
+
+        #live-tracker .dropdown-header .chevron {
+            transition: transform 0.3s ease;
+            color: var(--primary-light);
+            font-size: 1.1em;
+        }
+
+        #live-tracker .dropdown-header.active .chevron {
+            transform: rotate(180deg);
+        }
+
+        #live-tracker .dropdown-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 2px solid var(--primary-light);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            max-height: 350px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: var(--shadow-xl);
+            display: none;
+            backdrop-filter: blur(10px);
+        }
+
+        #live-tracker.light-mode .dropdown-list {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(240, 249, 255, 0.95) 100%);
+        }
+
+        #live-tracker .dropdown-list.show {
+            display: block;
+            animation: tracker-slideDown 0.3s ease-out;
+        }
+
+        #live-tracker .dropdown-item {
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        #live-tracker .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        #live-tracker .dropdown-item:hover {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--text-primary);
+            padding-right: 25px;
+        }
+
+        #live-tracker.light-mode .dropdown-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        #live-tracker .dropdown-item.selected {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(249, 115, 22, 0.1) 100%);
+            color: var(--primary-light);
+            border-right: 4px solid var(--accent);
+            padding-right: 16px;
+        }
+
+        #live-tracker button {
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 1.05em;
+            font-family: 'Cairo', 'Poppins', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-left: 12px;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+            border: none;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #live-tracker button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.3s ease;
+        }
+
+        #live-tracker button:hover::before {
+            left: 100%;
+        }
+
+        #live-tracker button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px -5px rgba(59, 130, 246, 0.4);
+        }
+
+        #live-tracker button:active {
+            transform: translateY(-1px);
+        }
+
+        #live-tracker button.back-button {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            box-shadow: var(--shadow-md);
+        }
+
+        #live-tracker button.back-button:hover {
+            box-shadow: 0 15px 30px -5px rgba(100, 116, 139, 0.4);
+        }
+
+        #live-tracker #user-mode button {
+            width: 100%;
+            margin-left: 0;
+            margin-bottom: 15px;
+            padding: 18px;
+            font-size: 1.1em;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+        }
+
+        #live-tracker #user-mode button:hover {
+            background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
+        }
+
+        #live-tracker .status-message {
+            margin-top: 25px;
+            padding: 18px 22px;
+            border-radius: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-left: 4px solid;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            animation: tracker-slideInUp 0.4s ease-out;
+        }
+
+        #live-tracker.light-mode .status-message {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        @keyframes tracker-slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #live-tracker .status-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: #fbbf24;
+            border-left-color: #f59e0b;
+        }
+
+        #live-tracker.light-mode .status-warning {
+            background: rgba(245, 158, 11, 0.08);
+            color: #b45309;
+        }
+
+        #live-tracker .status-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #6ee7b7;
+            border-left-color: #10b981;
+        }
+
+        #live-tracker.light-mode .status-success {
+            background: rgba(16, 185, 129, 0.08);
+            color: #047857;
+        }
+
+        #live-tracker .status-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #fca5a5;
+            border-left-color: #ef4444;
+        }
+
+        #live-tracker.light-mode .status-error {
+            background: rgba(239, 68, 68, 0.08);
+            color: #dc2626;
+        }
+
+        #live-tracker .custom-train-marker-wrapper {
+            position: relative;
+            text-align: center;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+        }
+
+        #live-tracker .custom-train-marker-wrapper img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        #live-tracker .train-time-label {
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            line-height: 1.2;
+            padding: 3px 6px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+        }
+
+        #live-tracker .leaflet-popup-content-wrapper {
+            direction: rtl;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow-xl);
+        }
+
+        #live-tracker.light-mode .leaflet-popup-content-wrapper {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(240, 249, 255, 0.95) 100%);
+        }
+
+        #live-tracker .leaflet-popup-content {
+            direction: rtl;
+            text-align: right;
+            color: var(--text-primary);
+            font-family: 'Cairo', sans-serif;
+        }
+
+        #live-tracker .leaflet-popup-tip {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+        }
+        
+        #live-tracker #live-locations {
+            list-style: none;
+            padding: 0;
+            margin-top: 25px;
+        }
+
+        #live-tracker #live-locations li {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.6) 100%);
+            border: 1px solid var(--border-color);
+            padding: 22px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+            border-right: 4px solid var(--accent);
+            box-shadow: var(--shadow-md);
+        }
+
+        #live-tracker.light-mode #live-locations li {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 249, 255, 0.8) 100%);
+        }
+
+        #live-tracker #live-locations li:hover {
+            transform: translateX(-8px);
+            box-shadow: 0 15px 30px -5px rgba(249, 115, 22, 0.3);
+            border-right-color: var(--primary-light);
+        }
+
+        #live-tracker .location-details {
+            flex: 1;
+        }
+
+        #live-tracker .location-details p {
+            margin: 0;
+            font-size: 1.05em;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        #live-tracker .location-details i {
+            color: var(--accent);
+            margin-left: 10px;
+        }
+
+        #live-tracker .time-stamp {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            font-size: 1em;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-align: left;
+            min-width: 120px;
+        }
+
+        #live-tracker .time-date {
+            font-size: 0.9em;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-top: 6px;
+        }
+        
+        .custom-alert-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            animation: tracker-fadeIn 0.3s ease;
+        }
+
+        .custom-alert-box {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: var(--shadow-xl);
+            text-align: center;
+            animation: tracker-slideUp 0.4s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        #live-tracker.light-mode .custom-alert-box {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(240, 249, 255, 0.95) 100%);
+        }
+
+        .custom-alert-icon {
+            font-size: 3.5em;
+            color: var(--accent);
+            margin-bottom: 20px;
+            animation: tracker-bounce 0.6s ease;
+        }
+
+        .custom-alert-message {
+            font-size: 1.25em;
+            color: var(--text-primary);
+            margin-bottom: 30px;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        .custom-alert-button {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+            color: white;
+            border: none;
+            padding: 14px 45px;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Cairo', sans-serif;
+            box-shadow: var(--shadow-md);
+        }
+
+        .custom-alert-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px -5px rgba(59, 130, 246, 0.4);
+        }
+
+        @keyframes tracker-slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #live-tracker { padding: 10px; }
+            #live-tracker .container { padding: 10px; }
+            #live-tracker .header {
+                padding: 25px 20px;
+                margin-bottom: 25px;
+            }
+            #live-tracker .header h1 { font-size: 2em; }
+            #live-tracker .header p { font-size: 1em; }
+            #live-tracker .step-card { padding: 20px; }
+            #live-tracker #map-container { height: 350px; }
+
+            #live-tracker button {
+                width: 100%;
+                margin-left: 0;
+                margin-bottom: 10px;
+                padding: 14px;
+            }
+
+            #live-tracker .custom-dropdown { max-width: 100%; }
+            .custom-alert-box { padding: 30px 20px; }
+            .custom-alert-message { font-size: 1.1em; }
+
+            #live-tracker #live-locations li {
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 15px;
+            }
+
+            #live-tracker .time-stamp {
+                width: 100%;
+                align-items: flex-end;
+            }
+
+            #live-tracker .theme-toggle {
+                width: 45px;
+                height: 45px;
+                font-size: 1.1em;
+                left: 15px;
+            }
+        }
+
+        #live-tracker ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #live-tracker ::-webkit-scrollbar-track {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 10px;
+        }
+
+        #live-tracker ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent) 100%);
+            border-radius: 10px;
+        }
+
+        #live-tracker ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--primary-light) 100%);
+        }
+
+        #live-tracker.light-mode ::-webkit-scrollbar-track {
+            background: rgba(226, 232, 240, 0.5);
         }
     </style>
 </head>
@@ -679,7 +1405,7 @@
             <nav>
                 <a href="#features"><span lang="ar">المميزات</span><span lang="fr">Fonctionnalités</span></a>
                 <a href="#screenshots"><span lang="ar">لقطات الشاشة</span><span lang="fr">Captures d'écran</span></a>
-                <a href="#video"><span lang="ar">Vidéo</span><span lang="fr">Vidéo</span></a>
+                <a href="#live-tracker"><span lang="ar">المتتبع المباشر</span><span lang="fr">Suivi en direct</span></a>
                 <a href="#about-us"><span lang="ar">من نحن</span><span lang="fr">À propos</span></a>
             </nav>
 
@@ -703,6 +1429,7 @@
         <div class="side-menu-content">
             <div class="side-menu-links">
                 <a href="#"><span lang="ar">الصفحة الرئيسية</span><span lang="fr">Accueil</span></a>
+                <a href="#live-tracker"><span lang="ar">المتتبع المباشر</span><span lang="fr">Suivi en direct</span></a>
                 <a href="#about-us"><span lang="ar">من نحن</span><span lang="fr">À propos de nous</span></a>
                 <div>
                     <button class="side-menu-accordion">
@@ -820,17 +1547,102 @@
             </div>
         </section>
 
-        <section id="video" class="video-section full-bleed" style="background: white;">
+        <!-- ============================================== -->
+        <!-- NEW SECTION: LIVE TRAIN TRACKER -->
+        <!-- ============================================== -->
+        <section id="live-tracker" class="full-bleed" dir="rtl">
             <div class="container">
                 <div class="section-title animate-on-scroll fade-in-up">
-                    <h2><span lang="ar">شاهد كيف يعمل</span><span lang="fr">Voyez comment ça marche</span></h2>
-                    <p><span lang="ar">فيديو قصير يوضح طريقة استعمال التطبيق بكل سهولة.</span><span lang="fr">Une courte vidéo qui explique comment utiliser l'application.</span></p>
+                    <h2><span lang="ar">المتتبع المباشر</span><span lang="fr">Suivi en direct du train</span></h2>
+                    <p><span lang="ar">اختر خطك واتبع موقع القطار لحظة بلحظة.</span><span lang="fr">Choisissez votre ligne et suivez la position du train en temps réel.</span></p>
                 </div>
-                <div class="video-player animate-on-scroll fade-in" style="transition-delay: 0.2s;">
-                    <iframe src="https://www.youtube.com/embed/79wFjChvcoY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                
+                <!-- Content from the new code starts here -->
+                <div class="header">
+                    <h1><i class="fas fa-train"></i>نظام تتبع القطارات</h1>
+                    <p><strong>GPS</strong> </p>
                 </div>
+        
+                <div class="theme-toggle-container">
+                    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="تبديل الوضع">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+        
+                <div id="line-selection" class="step-card">
+                    <h2><i class="fas fa-route"></i> اختر الخط:</h2>
+                    <div class="custom-dropdown" id="train-line-dropdown">
+                        <div class="dropdown-header" onclick="toggleDropdown('train-line-dropdown')">
+                            <span id="train-line-selected">-- اختر خطًا --</span>
+                            <i class="fas fa-chevron-down chevron"></i>
+                        </div>
+                        <div class="dropdown-list">
+                            <div class="dropdown-item" onclick="selectDropdownItem('train-line', 'alger-elaffroun', 'الجزائر - العفرون')">الجزائر - العفرون</div>
+                            <div class="dropdown-item" onclick="selectDropdownItem('train-line', 'alger-thenia', 'الجزائر - الثنية')">الجزائر - الثنية</div>
+                            <div class="dropdown-item" onclick="selectDropdownItem('train-line', 'alger-zeralda', 'الجزائر - زرالدة')">الجزائر - زرالدة</div>
+                        </div>
+                    </div>
+                    <button onclick="selectLine()">تأكيد الخط <i class="fas fa-arrow-left"></i></button>
+                </div>
+        
+                <div id="direction-selection" class="step-card" style="display: none;">
+                    <h2><i class="fas fa-map-marker-alt"></i> اختر الاتجاه:</h2>
+                    <div class="custom-dropdown" id="train-direction-dropdown">
+                        <div class="dropdown-header" onclick="toggleDropdown('train-direction-dropdown')">
+                            <span id="train-direction-selected">-- اختر اتجاهًا --</span>
+                            <i class="fas fa-chevron-down chevron"></i>
+                        </div>
+                        <div class="dropdown-list" id="train-direction-list">
+                        </div>
+                    </div>
+                    <button onclick="selectDirection()">تأكيد الاتجاه <i class="fas fa-check"></i></button>
+                    <button class="back-button" onclick="goBackToLineSelection()"><i class="fas fa-arrow-right"></i> العودة</button>
+                </div>
+        
+                <div id="user-mode" class="step-card" style="display: none;">
+                    <h2><i class="fas fa-user-circle"></i> اختر وضعيتك:</h2>
+                    <button onclick="setUserMode('in-train')"><i class="fas fa-train"></i> أنا داخل القطار</button>
+                    <button onclick="setUserMode('looking')"><i class="fas fa-search"></i> أبحث عن قطار</button>
+                    <button class="back-button" onclick="goBackToDirectionSelection()"><i class="fas fa-arrow-right"></i> العودة</button>
+                </div>
+                
+                <div id="train-locations" style="display: none;">
+                     <div id="location-sharing" class="step-card" style="display: none;">
+                        <h3><i class="fas fa-share-alt"></i> مشاركة الموقع (الاتجاه: <span id="current-direction-display" style="color: var(--accent); font-weight: bold;"></span>)</h3>
+                        <button onclick="shareGPSLocation()"><i class="fas fa-location-arrow"></i> مشاركة الموقع عبر GPS</button>
+                        <p style="margin: 25px 0 15px; text-align: center; font-weight: 600; color: var(--text-muted);">— أو —</p>
+                        <div class="custom-dropdown" id="station-select-dropdown">
+                            <div class="dropdown-header" onclick="toggleDropdown('station-select-dropdown')">
+                                <span id="station-select-selected">-- اختر المحطة يدويًا --</span>
+                                <i class="fas fa-chevron-down chevron"></i>
+                            </div>
+                            <div class="dropdown-list" id="station-select-list">
+                            </div>
+                        </div>
+                        <button onclick="shareStationLocation()"><i class="fas fa-paper-plane"></i> تأكيد المحطة</button>
+                        <p id="sharing-status" class="status-message status-warning"><i class="fas fa-info-circle"></i> يرجى مشاركة موقعك ليراه المسافرون الآخرون.</p>
+                    </div>
+                    
+                    <div class="step-card">
+                        <h2><i class="fas fa-globe-africa"></i> خريطة السكك الحديدية المباشرة:</h2>
+                        <div id="map-container"></div>
+                    </div>
+                    
+                    <div class="step-card">
+                        <h2><i class="fas fa-list-ul"></i> آخر البلاغات:</h2>
+                        <ul id="live-locations">
+                            <li><i class="fas fa-spinner fa-spin"></i> جاري جلب البيانات...</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- End of content from the new code -->
+
             </div>
         </section>
+        <!-- ============================================== -->
+        <!-- END OF LIVE TRAIN TRACKER SECTION -->
+        <!-- ============================================== -->
+
 
         <section id="about-us" class="about-us full-bleed">
             <div class="container">
@@ -879,6 +1691,7 @@
         </div>
     </footer>
 
+    <!-- Landing Page Script -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             
@@ -950,7 +1763,7 @@
                 }
             }
 
-            // ==================== SIDE MENU TOGGLE & ACCORDION (CORRECTED) ====================
+            // ==================== SIDE MENU TOGGLE & ACCORDION ====================
             const menuToggle = document.querySelector('.menu-toggle');
             const sideMenu = document.getElementById('side-menu');
             const menuOverlay = document.getElementById('menu-overlay');
@@ -969,13 +1782,11 @@
                 menuOverlay.addEventListener('click', closeMenu);
                 
                 sideMenu.querySelectorAll('a').forEach(link => {
-                    // Close menu only for main links, not the email link inside accordion
                     if (!link.parentElement.classList.contains('accordion-panel')) {
                         link.addEventListener('click', closeMenu);
                     }
                 });
 
-                // Accordion functionality
                 const accordionBtn = document.querySelector('.side-menu-accordion');
                 if(accordionBtn) {
                     accordionBtn.addEventListener('click', function() {
@@ -1001,6 +1812,600 @@
             
             animatedElements.forEach(el => observer.observe(el));
         });
+    </script>
+
+    <!-- Live Train Tracker Script -->
+    <script>
+        // ================================================
+        // LIVE TRACKER SCRIPT
+        // ================================================
+
+        function toggleTheme() {
+            const trackerSection = document.getElementById('live-tracker');
+            const themeToggle = document.getElementById('theme-toggle');
+            
+            if (trackerSection.classList.contains('light-mode')) {
+                trackerSection.classList.remove('light-mode');
+                localStorage.setItem('tracker_theme', 'dark');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                themeToggle.title = 'تبديل الوضع';
+            } else {
+                trackerSection.classList.add('light-mode');
+                localStorage.setItem('tracker_theme', 'light');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                themeToggle.title = 'تبديل الوضع';
+            }
+        }
+
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('tracker_theme') || 'dark';
+            const trackerSection = document.getElementById('live-tracker');
+            const themeToggle = document.getElementById('theme-toggle');
+            
+            if (savedTheme === 'light') {
+                trackerSection.classList.add('light-mode');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                trackerSection.classList.remove('light-mode');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        }
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDylFYmreCH5rc7SdkvuTl0TN4xmuPgiQ",
+            authDomain: "traintrackerdz.firebaseapp.com",
+            projectId: "traintrackerdz",
+            storageBucket: "traintrackerdz.appspot.com",
+            messagingSenderId: "16093250871",
+            appId: "1:16093250871:web:8324c8e5588f58129546b2",
+            measurementId: "G-EHNCX6P158"
+        };
+
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = app.database();
+        
+        let selectedLine = '';
+        let selectedDirection = ''; 
+        let selectedLineValue = '';
+        let selectedDirectionValue = '';
+        let selectedStationValue = '';
+        let firebaseListener = null;
+        
+        const currentUserID = localStorage.getItem('ttr_user_id') || database.ref().push().key;
+        localStorage.setItem('ttr_user_id', currentUserID);
+        
+        let map = null;
+        let trainMarkers = {}; 
+        const DEFAULT_CENTER = [36.7538, 3.0588]; 
+
+        const lineData = {
+            'alger-elaffroun': {
+                directions: {
+                    'elaffroun-alger': 'من العفرون نحو الجزائر',
+                    'alger-elaffroun': 'من الجزائر نحو العفرون'
+                },
+                stations: [
+                    { name: 'Alger Gare', displayName: 'محطة الجزائر', lat: 36.7725, lon: 3.0583 },
+                    { name: 'Agha Gare', displayName: 'آغا', lat: 36.7645, lon: 3.0673 },
+                    { name: 'Ateliers Gare', displayName: 'الورشات', lat: 36.7450, lon: 3.0850 },
+                    { name: 'Hussein Dey Gare', displayName: 'حسين داي', lat: 36.7280, lon: 3.0975 },
+                    { name: 'Kharrouba Gare', displayName: 'خروبة', lat: 36.7110, lon: 3.1110 },
+                    { name: 'El Harrach Gare', displayName: 'الحراش', lat: 36.7040, lon: 3.1410 },
+                    { name: 'Pont de Constantine Gare', displayName: 'جسر قسنطينة', lat: 36.6710, lon: 3.0780 },
+                    { name: 'Ain Naadja Gare', displayName: 'عين النعجة', lat: 36.6710, lon: 3.0610 },
+                    { name: 'Baba Ali Gare', displayName: 'بابا علي', lat: 36.6500, lon: 2.9900 },
+                    { name: 'Bir Touta Gare', displayName: 'بئر توتة', lat: 36.6350, lon: 2.9700 },
+                    { name: 'Boufarik Gare', displayName: 'بوفاريك', lat: 36.5680, lon: 2.8900 },
+                    { name: 'Beni Merred Gare', displayName: 'بني مراد', lat: 36.5350, lon: 2.8950 }, 
+                    { name: 'Blida Gare', displayName: 'البليدة', lat: 36.4670, lon: 2.8330 },
+                    { name: 'Chiffa Gare', displayName: 'شفة', lat: 36.4020, lon: 2.7680 },
+                    { name: 'Mouzaia Gare', displayName: 'موزاية', lat: 36.3810, lon: 2.7100 },
+                    { name: 'El Affroun Gare', displayName: 'داخل محطة العفرون', lat: 36.4010, lon: 2.6280 }
+                ]
+            },
+            'alger-thenia': {
+                directions: {
+                    'thenia-alger': 'من الثنية نحو الجزائر',
+                    'alger-thenia': 'من الجزائر نحو الثنية'
+                },
+                stations: [
+                    { name: 'Alger Gare', displayName: 'محطة الجزائر', lat: 36.7725, lon: 3.0583 },
+                    { name: 'Agha Gare', displayName: 'آغا', lat: 36.7645, lon: 3.0673 },
+                    { name: 'Ateliers Gare', displayName: 'الورشات', lat: 36.7450, lon: 3.0850 },
+                    { name: 'Hussein Dey Gare', displayName: 'حسين داي', lat: 36.7280, lon: 3.0975 },
+                    { name: 'Kharrouba Gare', displayName: 'خروبة', lat: 36.7110, lon: 3.1110 },
+                    { name: 'El Harrach Gare', displayName: 'الحراش', lat: 36.7040, lon: 3.1410 },
+                    { name: 'Oued Smar Gare', displayName: 'وادي السمار', lat: 36.7150, lon: 3.1650 },
+                    { name: 'Bab Ezzouar Gare', displayName: 'باب الزوار', lat: 36.7130, lon: 3.1850 },
+                    { name: 'Dar El Beida Gare', displayName: 'الدار البيضاء', lat: 36.7120, lon: 3.2050 },
+                    { name: 'Rouiba Gare', displayName: 'رويبة', lat: 36.7320, lon: 3.2680 },
+                    { name: 'Rouiba Industrie Gare', displayName: 'رويبة صناعية', lat: 36.7350, lon: 3.2850 },
+                    { name: 'Reghaia Industrie Gare', displayName: 'رغاية صناعية', lat: 36.7380, lon: 3.3200 },
+                    { name: 'Reghaia Gare', displayName: 'رغاية', lat: 36.7450, lon: 3.3600 },
+                    { name: 'Boudaou Gare', displayName: 'بودواو', lat: 36.7550, lon: 3.4200 },
+                    { name: 'Corso Gare', displayName: 'قورصو', lat: 36.7500, lon: 3.4500 },
+                    { name: 'Boumerdes Gare', displayName: 'بومرداس', lat: 36.7600, lon: 3.4750 },
+                    { name: 'Tijellabine Gare', displayName: 'تيجلابين', lat: 36.7450, lon: 3.5200 },
+                    { name: 'Thenia Gare', displayName: 'الثنية', lat: 36.7200, lon: 3.5600 }
+                ]
+            },
+            'alger-zeralda': {
+                directions: {
+                    'zeralda-alger': 'من زرالدة نحو الجزائر',
+                    'alger-zeralda': 'من الجزائر نحو زرالدة'
+                },
+                stations: [
+                    { name: 'Agha Gare', displayName: 'آغا', lat: 36.7645, lon: 3.0673 },
+                    { name: 'Ateliers Gare', displayName: 'الورشات', lat: 36.7450, lon: 3.0850 },
+                    { name: 'Hussein Dey Gare', displayName: 'حسين داي', lat: 36.7280, lon: 3.0975 },
+                    { name: 'Kharrouba Gare', displayName: 'خروبة', lat: 36.7110, lon: 3.1110 },
+                    { name: 'El Harrach Gare', displayName: 'الحراش', lat: 36.7040, lon: 3.1410 },
+                    { name: 'Pont de Constantine Gare', displayName: 'جسر قسنطينة', lat: 36.6710, lon: 3.0780 },
+                    { name: 'Ain Naadja Gare', displayName: 'عين النعجة', lat: 36.6710, lon: 3.0610 },
+                    { name: 'Baba Ali Gare', displayName: 'بابا علي', lat: 36.6500, lon: 2.9900 },
+                    { name: 'Bir Touta Gare', displayName: 'بئر توتة', lat: 36.6350, lon: 2.9700 },
+                    { name: 'Tessala El Merdja Gare', displayName: 'تسالة المرجة', lat: 36.6400, lon: 2.9100 },
+                    { name: 'Sidi Abdellah Gare', displayName: 'سيدي عبد الله', lat: 36.6500, lon: 2.8400 },
+                    { name: 'Sidi Abdellah - Centre', displayName: 'سيدي عبد الله - ج', lat: 36.6600, lon: 2.8000 },
+                    { name: 'Zeralda Gare', displayName: 'زرالدة', lat: 36.7120, lon: 2.8400 }
+                ]
+            }
+        };
+
+        function showCustomAlert(message) {
+            const overlay = document.createElement('div');
+            overlay.className = 'custom-alert-overlay';
+            
+            overlay.innerHTML = `
+                <div class="custom-alert-box">
+                    <div class="custom-alert-icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="custom-alert-message">${message}</div>
+                    <button class="custom-alert-button" onclick="this.closest('.custom-alert-overlay').remove()">حسناً</button>
+                </div>
+            `;
+            
+            document.body.appendChild(overlay);
+            
+            overlay.addEventListener('click', function(e) {
+                if (e.target === overlay) {
+                    overlay.remove();
+                }
+            });
+        }
+
+        function toggleDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            const header = dropdown.querySelector('.dropdown-header');
+            const list = dropdown.querySelector('.dropdown-list');
+            
+            document.querySelectorAll('#live-tracker .dropdown-list').forEach(dl => {
+                if (dl !== list) {
+                    dl.classList.remove('show');
+                    dl.parentElement.querySelector('.dropdown-header').classList.remove('active');
+                }
+            });
+            
+            list.classList.toggle('show');
+            header.classList.toggle('active');
+        }
+
+        function selectDropdownItem(dropdownName, value, text) {
+            const selectedSpan = document.getElementById(dropdownName + '-selected');
+            selectedSpan.textContent = text;
+            
+            if (dropdownName === 'train-line') {
+                selectedLineValue = value;
+            } else if (dropdownName === 'train-direction') {
+                selectedDirectionValue = value;
+            } else if (dropdownName === 'station-select') {
+                selectedStationValue = value;
+            }
+            
+            const dropdown = document.getElementById(dropdownName + '-dropdown');
+            const items = dropdown.querySelectorAll('.dropdown-item');
+            items.forEach(item => item.classList.remove('selected'));
+            event.target.classList.add('selected');
+            
+            toggleDropdown(dropdownName + '-dropdown');
+        }
+
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.custom-dropdown')) {
+                document.querySelectorAll('#live-tracker .dropdown-list').forEach(list => {
+                    list.classList.remove('show');
+                    list.parentElement.querySelector('.dropdown-header').classList.remove('active');
+                });
+            }
+        });
+
+        function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * (Math.PI / 180);
+            const dLon = (lon2 - lon1) * (Math.PI / 180);
+            const a = 
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        function findNearestStation(lat, lon, lineKey) {
+            const stations = lineData[lineKey].stations;
+            let nearestStation = { name: 'موقع غير محدد (En Route)', distanceKm: Infinity, displayName: 'غير محدد' };
+
+            stations.forEach(station => {
+                const distance = getDistanceFromLatLonInKm(lat, lon, station.lat, station.lon);
+                if (distance < nearestStation.distanceKm) {
+                    nearestStation.name = station.name;
+                    nearestStation.displayName = station.displayName;
+                    nearestStation.distanceKm = distance;
+                }
+            });
+
+            const STATION_THRESHOLD_KM = 2;
+            if (nearestStation.distanceKm < STATION_THRESHOLD_KM) {
+                return nearestStation.name; 
+            } else {
+                return `بين محطات (الأقرب: ${nearestStation.displayName} - ${nearestStation.distanceKm.toFixed(1)} كم)`;
+            }
+        }
+
+        function getRelativeDate(timestamp) {
+            const now = new Date();
+            const date = new Date(timestamp);
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const yesterday = new Date(today);
+            yesterday.setDate(today.getDate() - 1);
+            const targetDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+            if (targetDate.getTime() === today.getTime()) {
+                return 'اليوم';
+            } else if (targetDate.getTime() === yesterday.getTime()) {
+                return 'الأمس';
+            } else {
+                return date.toLocaleDateString('ar-DZ', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            }
+        }
+
+        function initializeMap() {
+            if (map) { map.remove(); }
+            map = L.map('map-container').setView(DEFAULT_CENTER, 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+        }
+
+        function selectLine() {
+            selectedLine = selectedLineValue;
+            if (selectedLine && lineData[selectedLine]) {
+                document.getElementById('line-selection').style.display = 'none';
+                populateDirections(selectedLine);
+                document.getElementById('direction-selection').style.display = 'block';
+            } else {
+                showCustomAlert("الرجاء اختيار خط القطار!");
+            }
+        }
+
+        function populateDirections(lineKey) {
+            const directionList = document.getElementById('train-direction-list');
+            directionList.innerHTML = '';
+            const directions = lineData[lineKey].directions;
+            for (const key in directions) {
+                directionList.innerHTML += `<div class="dropdown-item" onclick="selectDropdownItem('train-direction', '${key}', '${directions[key]}')">${directions[key]}</div>`;
+            }
+        }
+
+        function selectDirection() {
+            selectedDirection = selectedDirectionValue;
+            if (selectedDirection) {
+                document.getElementById('direction-selection').style.display = 'none';
+                document.getElementById('current-direction-display').textContent = lineData[selectedLine].directions[selectedDirection];
+                document.getElementById('user-mode').style.display = 'block';
+                populateStations(selectedLine);
+                
+                document.getElementById('train-locations').style.display = 'block';
+                initializeMap();
+                startFirebaseListener(selectedLine, selectedDirection);
+                
+                setInterval(cleanupOldLocations, 300000);
+            } else {
+                showCustomAlert("الرجاء اختيار اتجاه القطار!");
+            }
+        }
+        
+        function startFirebaseListener(line, direction) {
+            const liveList = document.getElementById('live-locations');
+            if (firebaseListener) {
+                database.ref('locations/' + firebaseListener).off(); 
+            }
+            const path = `${line}/${direction}`;
+            const lineRef = database.ref('locations/' + path);
+            firebaseListener = path;
+            liveList.innerHTML = '<li><i class="fas fa-spinner fa-spin"></i> جاري جلب آخر التحديثات...</li>';
+            
+            lineRef.on('value', (snapshot) => {
+                const data = snapshot.val() || {};
+                updateMap(data.gps_reports); 
+                renderLiveLocations(data.station_reports);
+            }, (error) => {
+                console.error("Firebase Read Error: ", error);
+                liveList.innerHTML = `<li><i class="fas fa-exclamation-triangle"></i> حدث خطأ في الاتصال: ${error.message}</li>`;
+            });
+        }
+        
+        function updateMap(gpsReports) {
+            Object.keys(trainMarkers).forEach(key => {
+                map.removeLayer(trainMarkers[key]);
+                delete trainMarkers[key];
+            });
+            
+            if (!gpsReports || typeof gpsReports !== 'object') { return; }
+            
+            const reportsArray = Object.keys(gpsReports)
+                .map(key => ({ key, ...gpsReports[key] }))
+                .sort((a, b) => b.timestamp - a.timestamp);
+
+            const TRAIN_DISTANCE_THRESHOLD_KM = 20;
+            const selectedTrains = [];
+            
+            for (const report of reportsArray) {
+                if (!report || report.type !== 'gps' || !report.lat || !report.lon) { continue; }
+                
+                let isSameTrain = false;
+                for (const train of selectedTrains) {
+                    const distance = getDistanceFromLatLonInKm(
+                        report.lat, report.lon, 
+                        train.lat, train.lon
+                    );
+                    
+                    if (distance < TRAIN_DISTANCE_THRESHOLD_KM) {
+                        isSameTrain = true;
+                        break;
+                    }
+                }
+                
+                if (!isSameTrain) {
+                    selectedTrains.push(report);
+                }
+                
+                if (selectedTrains.length >= 2) {
+                    break;
+                }
+            }
+
+            selectedTrains.forEach((loc, index) => {
+                const trainNumber = index + 1; 
+
+                const timeOptions24h = {hour: '2-digit', minute:'2-digit', hour12: false}; 
+                const time = new Date(loc.timestamp).toLocaleTimeString('ar-DZ', timeOptions24h);
+                const accuracy = loc.accuracy ? ` (دقة: ${loc.accuracy.toFixed(1)}م)` : '';
+                const reporterId = loc.reportedBy ? loc.reportedBy.substring(0, 8) : 'مجهول'; 
+                
+                const locationName = loc.stationName || 'موقع غير معروف'; 
+
+                const popupText = `
+                    <div style="text-align: right; direction: rtl;">
+                        <h4 style="color: #3b82f6; margin-bottom: 5px;">قطار رقم ${trainNumber} <i class="fas fa-train"></i></h4>
+                        <hr style="border-top: 1px solid #334155; margin: 5px 0;">
+                        
+                        <p style="margin: 5px 0;">
+                            <i class="fas fa-clock"></i> <strong>التوقيت:</strong> ${time}
+                        </p>
+                        
+                        <p style="margin: 5px 0;">
+                            <i class="fas fa-map-pin"></i> <strong>مكان القطار:</strong> 
+                            <span style="font-weight: bold; color: #f97316;">${locationName}</span>
+                        </p>
+                        
+                        <p style="margin: 5px 0; font-size: 0.8em; color: #94a3b8;">
+                            ${getRelativeDate(loc.timestamp)}${accuracy} | بلاغ المستخدم ${reporterId}...
+                        </p>
+                    </div>
+                `;
+                
+                if (index === 0) {
+                   map.setView([loc.lat, loc.lon], map.getZoom() || 13);
+                }
+                
+                const dynamicTrainIcon = L.divIcon({
+                    className: 'custom-train-marker-wrapper', 
+                    html: `
+                        <div style="position: relative; width: 80px; height: 100px;">
+                            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Picsart_25-10-11_17-47-56-507-TF7By74AiPLigfFYMK1tH0VkObkU0T.png" alt="train marker" style="width: 100%; height: 100%;">
+                            <div class="train-time-label">
+                                قطار ${trainNumber}<br>${time}
+                            </div>
+                        </div>
+                    `,
+                    iconSize: [80, 100], 
+                    iconAnchor: [40, 100] 
+                });
+
+                const marker = L.marker([loc.lat, loc.lon], { icon: dynamicTrainIcon })
+                    .bindPopup(popupText) 
+                    .addTo(map);
+                trainMarkers[loc.key] = marker; 
+            });
+            
+            if (Object.keys(trainMarkers).length > 1) {
+                 const bounds = L.featureGroup(Object.values(trainMarkers)).getBounds();
+                 map.fitBounds(bounds, {padding: [50, 50]});
+            }
+        }
+        
+        function renderLiveLocations(stationReports) {
+            const liveList = document.getElementById('live-locations');
+            liveList.innerHTML = ''; 
+            
+            if (!stationReports || typeof stationReports !== 'object') {
+                liveList.innerHTML = '<li><i class="fas fa-info-circle"></i> لا توجد بلاغات محطات يدوية حاليًا.</li>';
+                return;
+            }
+            
+            const sortedReports = Object.values(stationReports).sort((a, b) => b.timestamp - a.timestamp);
+            
+            sortedReports.forEach((loc, index) => {
+                if (loc.type !== 'station') return; 
+
+                const li = document.createElement('li');
+                const relativeDate = getRelativeDate(loc.timestamp);
+                const timeOptions24h = {hour: '2-digit', minute:'2-digit', hour12: false}; 
+                const time = new Date(loc.timestamp).toLocaleTimeString('ar-DZ', timeOptions24h);
+                li.innerHTML = `
+                    <div class="location-details">
+                        <p style="margin: 0; font-size: 1.1em;"><i class="fas fa-map-pin"></i> <strong>بلاغ ${index + 1}</strong>: تم رصده في محطة: <strong>${loc.value}</strong></p>
+                    </div>
+                    <div class="time-stamp">
+                        <span style="font-size: 1.2em;">${time}</span>
+                        <span class="time-date"><i class="far fa-clock"></i> ${relativeDate}</span>
+                    </div>`;
+                liveList.appendChild(li);
+            });
+        }
+        
+        async function submitNewReport(reportData) {
+            const statusDiv = document.getElementById('sharing-status');
+            const path = `${selectedLine}/${selectedDirection}`;
+            const reportTypeKey = reportData.type === 'gps' ? 'gps_reports' : 'station_reports';
+            const reportRef = database.ref('locations/' + path).child(reportTypeKey).push(); 
+            try {
+                const finalReport = { ...reportData, reportedBy: currentUserID };
+                await reportRef.set(finalReport);
+                statusDiv.className = 'status-message status-success';
+                statusDiv.innerHTML = (reportData.type === 'gps') ? 
+                    `<i class="fas fa-check-circle"></i> تم إرسال موقع GPS بنجاح. سيظهر موقعك كأحد القطارات على الخريطة.` : 
+                    `<i class="fas fa-check-circle"></i> تم إرسال المحطة بنجاح: <strong>${reportData.value}</strong>.`;
+            } catch (error) {
+                statusDiv.className = 'status-message status-error';
+                statusDiv.innerHTML = `<i class="fas fa-times-circle"></i> فشل الإرسال إلى Firebase: ${error.message}`;
+            }
+        }
+
+        function shareGPSLocation() {
+            const statusDiv = document.getElementById('sharing-status');
+            statusDiv.className = 'status-message status-warning';
+            statusDiv.innerHTML = '<i class="fas fa-hourglass-half"></i> جاري تحديد الموقع عبر GPS...';
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const nearestStationName = findNearestStation(
+                            position.coords.latitude, 
+                            position.coords.longitude, 
+                            selectedLine
+                        );
+
+                        const reportData = {
+                            type: 'gps', 
+                            lat: position.coords.latitude, 
+                            lon: position.coords.longitude,
+                            accuracy: position.coords.accuracy, 
+                            timestamp: firebase.database.ServerValue.TIMESTAMP,
+                            stationName: nearestStationName 
+                        };
+                        submitNewReport(reportData);
+                    },
+                    (error) => {
+                        statusDiv.className = 'status-message status-error';
+                        statusDiv.innerHTML = '<i class="fas fa-times-circle"></i> فشل تحديد الموقع. (ضعف الإشارة أو رفض الإذن).';
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+            } else {
+                statusDiv.className = 'status-message status-error';
+                statusDiv.innerHTML = '<i class="fas fa-times-circle"></i> المتصفح لا يدعم تحديد الموقع.';
+            }
+        }
+
+        function shareStationLocation() {
+            const selectedStation = selectedStationValue;
+            const statusDiv = document.getElementById('sharing-status');
+            if (selectedStation) {
+                const reportData = { 
+                    type: 'station', value: selectedStation, timestamp: firebase.database.ServerValue.TIMESTAMP 
+                };
+                submitNewReport(reportData);
+            } else {
+                statusDiv.className = 'status-message status-error';
+                statusDiv.innerHTML = '<i class="fas fa-times-circle"></i> الرجاء اختيار المحطة قبل المشاركة!';
+            }
+        }
+        
+        function populateStations(lineKey) {
+            const stationList = document.getElementById('station-select-list');
+            stationList.innerHTML = '<div class="dropdown-item" onclick="selectDropdownItem(\'station-select\', \'\', \'-- اختر محطة --\')">-- اختر محطة --</div>';
+            if (lineData[lineKey] && lineData[lineKey].stations) {
+                lineData[lineKey].stations.forEach(station => {
+                    stationList.innerHTML += `<div class="dropdown-item" onclick="selectDropdownItem('station-select', '${station.displayName}', '${station.displayName}')">${station.displayName}</div>`;
+                });
+            }
+        }
+
+        function setUserMode(mode) {
+            const header = document.querySelector('#live-tracker .header');
+            
+            document.getElementById('user-mode').style.display = 'none';
+            if (mode === 'in-train') {
+                header.style.display = 'block';
+                document.getElementById('location-sharing').style.display = 'block';
+                document.getElementById('sharing-status').className = 'status-message status-warning';
+                document.getElementById('sharing-status').innerHTML = `<i class="fas fa-info-circle"></i> شارك موقعك ليظهر قطارك على الخريطة لجميع المسافرون الآخرون!`;
+            } else {
+                header.style.display = 'none';
+                document.getElementById('location-sharing').style.display = 'none';
+            }
+        }
+
+        function cleanupOldLocations() {
+            const HOUR_IN_MS = 60 * 60 * 1000;
+            const cutoffTime = Date.now() - HOUR_IN_MS;
+            if (!selectedLine || !selectedDirection) return;
+            const path = `${selectedLine}/${selectedDirection}`;
+            const lineRef = database.ref('locations/' + path);
+            lineRef.once('value', (snapshot) => {
+                const data = snapshot.val(); 
+                if (!data) return;
+                
+                if (data.gps_reports) {
+                    Object.keys(data.gps_reports).forEach(key => {
+                        const report = data.gps_reports[key];
+                        if (report.timestamp < cutoffTime) {
+                            lineRef.child('gps_reports').child(key).set(null).then(() => console.log(`تم حذف بلاغ GPS القديم تلقائياً (${key}).`));
+                        }
+                    });
+                }
+                
+                if (data.station_reports) {
+                     Object.keys(data.station_reports).forEach(key => {
+                        const report = data.station_reports[key];
+                        if (report.timestamp < cutoffTime) {
+                            lineRef.child('station_reports').child(key).set(null).then(() => console.log(`تم حذف بلاغ المحطة القديم تلقائياً (${key}).`));
+                        }
+                    });
+                }
+            });
+        }
+
+        function goBackToLineSelection() {
+            document.getElementById('direction-selection').style.display = 'none';
+            document.getElementById('line-selection').style.display = 'block';
+            selectedDirection = '';
+            selectedDirectionValue = '';
+        }
+
+        function goBackToDirectionSelection() {
+            document.getElementById('user-mode').style.display = 'none';
+            document.getElementById('train-locations').style.display = 'none';
+            document.getElementById('direction-selection').style.display = 'block';
+            
+            if (firebaseListener) {
+                database.ref('locations/' + firebaseListener).off();
+                firebaseListener = null;
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', initializeTheme);
     </script>
 </body>
 </html>
